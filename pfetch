@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # pfetch - Simple POSIX sh fetch script.
 
