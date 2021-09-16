@@ -1542,8 +1542,16 @@ main() {
             return 0
         ;;
 
-        -d)
-            # Below exec is not run, stderr is shown.
+        -u)
+            if [ "$EUID" -ne 0 ]
+              then echo "To update, please run as root."
+              exit
+            fi
+            echo Updating...
+            curl -s -o /usr/local/bin/pfetch https://raw.githubusercontent.com/OldWorldOrdr/pfetch/master/pfetch
+            chmod +x /usr/local/bin/pfetch
+            echo Done.
+            return 0
         ;;
 
         '')
@@ -1553,6 +1561,7 @@ main() {
         *)
             cat <<EOF
 ${0##*/}     show system information
+${0##*/} -u  update to latest version
 ${0##*/} -d  show stderr (debug mode)
 ${0##*/} -v  show version information
 EOF
@@ -1609,7 +1618,7 @@ EOF
         # Disable globbing and set the positional parameters to the
         # contents of 'PF_INFO'.
         set -f
-        set +f -- ${PF_INFO-ascii title os host kernel uptime pkgs memory}
+        set +f -- ${PF_INFO-ascii title os host kernel uptime pkgs}
 
         # Iterate over the info functions to determine the lengths of the
         # "info names" for output alignment. The option names and subtitles
