@@ -2,7 +2,9 @@ Run the following to easily install
 
 	$ sudo curl -o /usr/local/bin/pfetch https://raw.githubusercontent.com/OldWorldOrdr/pfetch/master/pfetch && sudo chmod +x /usr/local/bin/pfetch
 
-Run `pfetch -u` as root to update (requires bash)
+Run `pfetch -u` as root to update
+
+You can change the shebang if you don't have bash, built-in updates will not work however.
 
 <p align="center"><img src="https://user-images.githubusercontent.com/6799467/65944518-68834d80-e421-11e9-9b14-6ca26a16108a.png" width="350px"></p>
 <h1 align="center">pfetch</h1>
