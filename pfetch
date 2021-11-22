@@ -1581,25 +1581,11 @@ main() {
             return 0
         ;;
 
-        -d)
-            printf 'Enter a location to download pfetch to.\n'
-            printf 'For example, /usr/local/bin\n'
-            read -p 'Path: ' DLPATH
-            printf 'Downloading...\n'
-            curl -s -o $DLPATH/pfetch https://raw.githubusercontent.com/OldWorldOrdr/pfetch/master/pfetch
-            chmod +x $DLPATH/pfetch
-            printf 'Done.\n'
-            return 0
-        ;;
-
         -u)
-            if [ "$EUID" -ne 0 ]
-              then echo "To update, please run as root."
-              return 0
-            fi
             printf 'Updating...\n'
-            curl -s -o /usr/local/bin/pfetch https://raw.githubusercontent.com/OldWorldOrdr/pfetch/master/pfetch
-            chmod +x /usr/local/bin/pfetch
+            dlpath="$(which pfetch)"
+            curl -s -o $dlpath https://raw.githubusercontent.com/OldWorldOrdr/pfetch/master/pfetch
+            chmod +x $dlpath
             printf 'Done.\n'
             return 0
         ;;
@@ -1611,8 +1597,7 @@ main() {
         *)
             cat <<EOF
 ${0##*/}     show system information
-${0##*/} -u  download the latest version of pfetch to /usr/local/bin
-${0##*/} -d  download the latest version of pfetch to a user-defined location
+${0##*/} -u  update pfetch to the latest version
 ${0##*/} -d  show stderr (debug mode)
 ${0##*/} -v  show version information
 EOF
