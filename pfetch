@@ -1595,7 +1595,7 @@ main() {
         -u)
             if [ "$EUID" -ne 0 ]
               then echo "To update, please run as root."
-              exit
+              return 0
             fi
             printf 'Updating...\n'
             curl -s -o /usr/local/bin/pfetch https://raw.githubusercontent.com/OldWorldOrdr/pfetch/master/pfetch
