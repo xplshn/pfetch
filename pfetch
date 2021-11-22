@@ -1581,6 +1581,12 @@ main() {
             return 0
         ;;
 
+        --version)
+            printf '%s 0.7.0\n' "${0##*/}"
+            printf 'Fork by OldWorldOrder\n'
+            return 0
+        ;;
+
         -u)
             printf 'Updating...\n'
             dlpath="$(which pfetch)"
