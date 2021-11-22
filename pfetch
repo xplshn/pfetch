@@ -1611,7 +1611,7 @@ main() {
         *)
             cat <<EOF
 ${0##*/}     show system information
-${0##*/} -u  update to latest version
+${0##*/} -u  download the latest version of pfetch to /usr/local/bin
 ${0##*/} -d  download the latest version of pfetch to a user-defined location
 ${0##*/} -d  show stderr (debug mode)
 ${0##*/} -v  show version information
