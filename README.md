@@ -1,6 +1,6 @@
 Run the following to easily install
 
-	$ sudo curl -o /usr/local/bin/pfetch https://raw.githubusercontent.com/OldWorldOrdr/pfetch/master/pfetch && sudo chmod +x /usr/local/bin/pfetch
+	$ sudo curl -s -o /usr/local/bin/pfetch https://raw.githubusercontent.com/OldWorldOrdr/pfetch/master/pfetch && sudo chmod +x /usr/local/bin/pfetch
 
 Run `pfetch -u` as root to update
 
