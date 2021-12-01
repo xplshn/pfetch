@@ -1596,10 +1596,6 @@ main() {
             return 0
         ;;
 
-        -d)
-            # Below exec is not run, stderr is shown.
-        ;;
-
         '')
             exec 2>/dev/null
         ;;
@@ -1608,7 +1604,6 @@ main() {
             cat <<EOF
 ${0##*/}     show system information
 ${0##*/} -u  update pfetch to the latest version
-${0##*/} -d  show stderr (debug mode)
 ${0##*/} -v  show version information
 EOF
             return 0
