@@ -1596,6 +1596,10 @@ main() {
             return 0
         ;;
 
+        -d)
+            # Below exec is not run, stderr is shown.
+        ;;
+
         '')
             exec 2>/dev/null
         ;;
