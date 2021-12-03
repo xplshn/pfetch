@@ -1589,7 +1589,7 @@ main() {
 
         -u)
             printf 'Updating...\n'
-            dlpath="$(command -v pfetch)"
+            dlpath="$(command -v ${0##*/})"
             curl -s -o $dlpath https://raw.githubusercontent.com/OldWorldOrdr/pfetch/master/pfetch
             printf 'Done.\n'
             return 0
@@ -1602,7 +1602,7 @@ main() {
         *)
             cat <<EOF
 ${0##*/}     show system information
-${0##*/} -u  update pfetch to the latest version
+${0##*/} -u  update ${0##*/} to the latest version
 ${0##*/} -v  show version information
 EOF
             return 0
