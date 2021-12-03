@@ -1591,7 +1591,6 @@ main() {
             printf 'Updating...\n'
             dlpath="$(command -v pfetch)"
             curl -s -o $dlpath https://raw.githubusercontent.com/OldWorldOrdr/pfetch/master/pfetch
-            chmod +x $dlpath
             printf 'Done.\n'
             return 0
         ;;
