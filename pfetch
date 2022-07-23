@@ -636,6 +636,7 @@ get_pkgs() {
                 # Commands which print packages one per line.
                 has scoop      && scoop list
                 has winget     && winget list
+                has pacman-key && pacman -Qq
             ;;
 
             (Darwin*)
