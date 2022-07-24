@@ -603,6 +603,8 @@ get_pkgs() {
         ;;
     esac
 
+has pip && sub=$((sub - $(pip list | wc -l))) && sub=$((sub + 3))
+
     packages=$(($(
         case $os in
             (Linux*)
