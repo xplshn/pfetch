@@ -186,18 +186,21 @@ get_title() {
     # /etc/hostname file.
     [ "$hostname" ] || read -r hostname < /etc/hostname
 
-    # Add escape sequences for coloring to user and host name. As we embed
+    # Add escape sequences for coloring to user and host name unless $PF_TITLECOLOR=0. As we embed
     # them directly in the arguments passed to log(), we cannot use esc_p().
-#   esc SGR 1
-#   user=$e$user
-#   esc SGR "3${PF_COL3:-1}"
-#   user=$e$user
-#   esc SGR 1
-#   user=$user$e
-#   esc SGR 1
-#   hostname=$e$hostname
-#   esc SGR "3${PF_COL3:-1}"
-#   hostname=$e$hostname
+
+if ! [ "$PF_TITLECOLOR" -eq "0" ]; then
+    esc SGR 1
+    user=$e$user
+    esc SGR "3${PF_COL3:-1}"
+    user=$e$user
+    esc SGR 1
+    user=$user$e
+    esc SGR 1
+    hostname=$e$hostname
+    esc SGR "3${PF_COL3:-1}"
+    hostname=$e$hostname
+fi
 
     log "${user}@${hostname}" " " " " >&6
 }
