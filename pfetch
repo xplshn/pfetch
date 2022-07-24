@@ -252,7 +252,7 @@ get_os() {
                 distro=$(lsb_release -sd)
 
             # Android detection works by checking for the existence of
-            # the follow two directories. I don't think there's a simpler
+            # the following two directories. I don't think there's a simpler
             # method than this.
             elif [ -d /system/app ] && [ -d /system/priv-app ]; then
                 distro="Android $(getprop ro.build.version.release)"
