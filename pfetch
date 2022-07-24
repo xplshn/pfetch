@@ -7,8 +7,12 @@
 # Wrapper around all escape sequences used by pfetch to allow for
 # greater control over which sequences are used (if any at all).
 
-# Configuration
-PF_INFO="ascii title os host kernel uptime pkgs"
+# Source configuration file if it exists
+if [ -f ${XDG_CONFIG_HOME}/pfetch.conf ]; then
+    source ${XDG_CONFIG_HOME}/pfetch.conf
+elif [ -f $HOME/.config/pfetch.conf ]; then
+    source $HOME/.config/pfetch.conf
+fi
 
 esc() {
     case $1 in
