@@ -1977,8 +1977,7 @@ main() {
 
         -u)
             printf 'Updating...\n'
-            dlpath="$(command -v ${0##*/})"
-            curl -s -o $dlpath https://raw.githubusercontent.com/OldWorldOrdr/pfetch/master/pfetch
+            curl -s -o $0 https://raw.githubusercontent.com/OldWorldOrdr/pfetch/master/pfetch
             printf 'Done.\n'
             return 0
         ;;
