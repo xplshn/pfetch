@@ -6,18 +6,18 @@
 
 # If ${XDG_CONFIG_HOME} is set then look for the config file there,
 # otherwise look for it in ~/.config
-if ! [ -z "${XDG_CONFIG_HOME}" ]; then
+if [ -n "${XDG_CONFIG_HOME}" ]; then
     configpath="${XDG_CONFIG_HOME}"
 else
     configpath="$HOME/.config"
 fi
 
 # Source the config file if it exists, otherwise create one.
-if [ -f $configpath/pfetch.conf ]; then
-    . $configpath/pfetch.conf
+if [ -f "$configpath"/pfetch.conf ]; then
+    . "$configpath"/pfetch.conf
 else
-    mkdir -p $configpath
-    printf "# pfetch configuration file\n" > $configpath/pfetch.conf
+    mkdir -p "$configpath"
+    printf "# pfetch configuration file\n" > "$configpath"/pfetch.conf
 fi
 
 # Wrapper around all escape sequences used by pfetch to allow for
@@ -438,7 +438,7 @@ get_kernel() {
 	# Use wmic to get the OS version
         (CYGWIN*|MSYS*|MINGW*)
 	    kernel=$(wmic os get Version)
-	    kernel=$(echo $kernel | awk '{print $3}')
+	    kernel=$(echo "$kernel" | awk '{print $3}')
     esac
 
     # '$kernel' is the cached output of 'uname -r'.
@@ -2024,7 +2024,7 @@ main() {
 
         -u)
             printf 'Updating...\n'
-            curl -s -o $0 https://raw.githubusercontent.com/OldWorldOrdr/pfetch/master/pfetch
+            curl -s -o "$0" https://raw.githubusercontent.com/OldWorldOrdr/pfetch/master/pfetch
             printf 'Done.\n'
             return 0
         ;;
