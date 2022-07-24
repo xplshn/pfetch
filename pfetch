@@ -4,11 +4,20 @@
 
 #PF_ASCII="arch"
 
-# Source configuration file if it exists
-if [ -f ${XDG_CONFIG_HOME}/pfetch.conf ]; then
-    . ${XDG_CONFIG_HOME}/pfetch.conf
-elif [ -f $HOME/.config/pfetch.conf ]; then
-    . $HOME/.config/pfetch.conf
+# If ${XDG_CONFIG_HOME} is set then look for the config file there,
+# otherwise look for it in ~/.config
+if ! [ -z "${XDG_CONFIG_HOME}" ]; then
+    configpath="${XDG_CONFIG_HOME}"
+else
+    configpath="$HOME/.config"
+fi
+
+# Source the config file if it exists, otherwise create one.
+if [ -f $configpath/pfetch.conf ]; then
+    . $configpath/pfetch.conf
+else
+    mkdir -p $configpath
+    printf "# pfetch configuration file\n" > $configpath/pfetch.conf
 fi
 
 # Wrapper around all escape sequences used by pfetch to allow for
