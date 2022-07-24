@@ -6,9 +6,9 @@
 
 # Source configuration file if it exists
 if [ -f ${XDG_CONFIG_HOME}/pfetch.conf ]; then
-    source ${XDG_CONFIG_HOME}/pfetch.conf
+    . ${XDG_CONFIG_HOME}/pfetch.conf
 elif [ -f $HOME/.config/pfetch.conf ]; then
-    source $HOME/.config/pfetch.conf
+    . $HOME/.config/pfetch.conf
 fi
 
 # Wrapper around all escape sequences used by pfetch to allow for
