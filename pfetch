@@ -529,7 +529,13 @@ get_uptime() {
     # math.
     case $os in
         (Linux* | Minix* | SerenityOS*|CYGWIN*|MSYS*|MINGW*)
-            IFS=. read -r s _ < /proc/uptime
+            if [ -r /proc/uptime ]; then
+                IFS=. read -r s _ < /proc/uptime
+            else
+                boot=$(date -d"$(uptime -s)" +%s)
+                now=$(date +%s)
+                s=$((now - boot))
+            fi
         ;;
 
         (Darwin* | *BSD* | DragonFly*)
