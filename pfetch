@@ -4,9 +4,6 @@
 
 #PF_ASCII="arch"
 
-# Wrapper around all escape sequences used by pfetch to allow for
-# greater control over which sequences are used (if any at all).
-
 # Source configuration file if it exists
 if [ -f ${XDG_CONFIG_HOME}/pfetch.conf ]; then
     source ${XDG_CONFIG_HOME}/pfetch.conf
@@ -14,6 +11,8 @@ elif [ -f $HOME/.config/pfetch.conf ]; then
     source $HOME/.config/pfetch.conf
 fi
 
+# Wrapper around all escape sequences used by pfetch to allow for
+# greater control over which sequences are used (if any at all).
 esc() {
     case $1 in
         CUU) e="${esc_c}[${2}A" ;; # cursor up
