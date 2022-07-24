@@ -715,7 +715,7 @@ has pip && sub=$((sub - $(pip list | wc -l) + 3))
                 done < /usr/Ports/packages.db
             ;;
         esac | wc -l
-    ) - $sub))
+    ) - sub))
 
     # 'wc -l' can have leading and/or trailing whitespace
     # depending on the implementation, so strip them.
