@@ -660,7 +660,6 @@ has pip && sub=$((sub - $(pip list | wc -l) + 3))
                 has scoop      && scoop list
                 has winget     && winget list
                 has pacman-key && pacman -Qq
-                has cygcheck   && cygcheck -cd
             ;;
 
             (Darwin*)
