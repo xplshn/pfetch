@@ -528,7 +528,7 @@ get_uptime() {
     # converting that data into days, hours and minutes using simple
     # math.
     case $os in
-        (Linux* | Minix* | SerenityOS* | CYGWIN* | MSYS* | MINGW*)
+        (Linux*| Minix*|SerenityOS*|CYGWIN*|MSYS*|MINGW*)
             if ! [ -r /proc/uptime ] || [ "$PF_FORCEALTUPTIME" -eq 1 ]; then
                 boot=$(date -d"$(uptime -s)" +%s)
                 now=$(date +%s)
@@ -538,7 +538,7 @@ get_uptime() {
             fi
         ;;
 
-        (Darwin* | *BSD* | DragonFly*)
+        (Darwin*|*BSD*|DragonFly*)
             s=$(sysctl -n kern.boottime)
 
             # Extract the uptime in seconds from the following output:
