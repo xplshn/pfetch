@@ -620,6 +620,10 @@ get_pkgs() {
     # line, giving us the total package count of whatever package
     # managers are installed.
     case $os in
+        (Linux*)
+            has flatpak    && sub=$((sub + 1))
+        ;;
+
         (CYGWIN*|MSYS*|MINGW*)
             has scoop      && sub=$((sub + 4))
             has winget     && sub=$((sub + 4))
@@ -645,6 +649,7 @@ has pip && sub=$((sub - $(pip list | wc -l) + 3))
                 has apk        && apk info
                 has guix       && guix package --list-installed
                 has opkg       && opkg list-installed
+                has flatpak    && flatpak list
 
                 # Directories containing packages.
                 has kiss       && printf '%s\n' /var/db/kiss/installed/*/
