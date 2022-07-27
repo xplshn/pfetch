@@ -620,10 +620,6 @@ get_pkgs() {
     # line, giving us the total package count of whatever package
     # managers are installed.
     case $os in
-        (Linux*)
-            has flatpak    && sub=$((sub + 1))
-        ;;
-
         (CYGWIN*|MSYS*|MINGW*)
             has scoop      && sub=$((sub + 4))
             has winget     && sub=$((sub + 4))
