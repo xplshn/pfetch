@@ -4,8 +4,8 @@
 
 # If ${XDG_CONFIG_HOME} is set then look for the config file there,
 # otherwise look for it in ~/.config
-if [ -n "${XDG_CONFIG_HOME}" ]; then
-    configpath="${XDG_CONFIG_HOME}"
+if [ -n "$XDG_CONFIG_HOME" ]; then
+    configpath="$XDG_CONFIG_HOME"
 else
     configpath="$HOME/.config"
 fi
