@@ -11,6 +11,7 @@ else
 fi
 
 # Source the config file if it exists, otherwise create one.
+# shellcheck disable=SC1091
 if [ -f "$configpath"/pfetch.conf ]; then
     . "$configpath"/pfetch.conf
 else
@@ -429,6 +430,7 @@ get_os() {
     esac
 }
 
+# shellcheck disable=SC2086
 get_kernel() {
     case $os in
         # Don't print kernel output on some systems as the
