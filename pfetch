@@ -2016,7 +2016,7 @@ get_ascii() {
 main() {
     case $* in
         -v)
-            printf '%s 0.7.0\n' "${0##*/}"
+            printf '%s 1.0 (OldWorldOrdr fork)\n' "${0##*/}"
             return 0
         ;;
 
