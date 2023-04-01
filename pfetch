@@ -2012,7 +2012,7 @@ get_ascii() {
     } >&6
 }
 
-# shellcheck disable=1091
+# shellcheck disable=1090,1091
 main() {
     case $* in
         -v)
