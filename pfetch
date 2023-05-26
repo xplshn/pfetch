@@ -1071,7 +1071,7 @@ get_disk() {
 get_wm() {
     case $os in
         (Darwin*|CYGWIN*|MSYS*|MINGW*|Windows_NT)
-            # Don't display window manager on macOS and Windows.
+            # Don't display window manager on macOS or Windows.
         ;;
 
         (*)
@@ -1404,13 +1404,13 @@ get_ascii() {
 		
 		CYGWIN*|MSYS*|MINGW*|Windows_NT)
 		    read_ascii 4 <<-EOF
-			${c4}######  ######
-				######  ######
-				######  ######
-				
-				######  ######
-				######  ######
-				######  ######
+				${c4}######  ######
+				${c4}######  ######
+				${c4}######  ######
+				${c4}
+				${c4}######  ######
+				${c4}######  ######
+				${c4}######  ######
 			EOF
 		;;
 
