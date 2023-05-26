@@ -1412,7 +1412,7 @@ get_ascii() {
 				${c4}######  ######
 				${c4}######  ######
 			EOF
-		;;
+        ;;
 
         ([Dd]ahlia*)
             read_ascii 1 <<-EOF
