@@ -413,7 +413,6 @@ get_os() {
     esac
 }
 
-# shellcheck disable=SC2086
 get_kernel() {
     case $os in
         # Don't print kernel output on some systems as the
@@ -421,10 +420,10 @@ get_kernel() {
         (*BSD*|Haiku|Minix)
             return
         ;;
-	    # Use wmic to get the OS version
+        # Use wmic to get the OS version
         (CYGWIN*|MSYS*|MINGW*|Windows_NT)
-	    kernel=$(wmic os get Version)
-	    kernel=$(echo $kernel | awk '{print $3}')
+            kernel=$(wmic os get Version | sed -n 2p)
+        ;;
     esac
 
     # '$kernel' is the cached output of 'uname -r'.
