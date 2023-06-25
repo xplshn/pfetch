@@ -2027,10 +2027,12 @@ main() {
         ;;
 
         *)
-            printf "%s     show system information
-%s -u  update %s to the latest version
-%s -d  show stderr (debug mode)
-%s -v  show version information\n" "${0##*/}" "${0##*/}" "${0##*/}" "${0##*/}" "${0##*/}"
+            printf "%s" "\
+${0##*/}     show system information
+${0##*/} -u  update to the latest version
+${0##*/} -d  show stderr (debug mode)
+${0##*/} -v  show version information
+"
             return 0
         ;;
     esac
