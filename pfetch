@@ -1496,8 +1496,7 @@ get_ascii() {
         ;;
 
         ([Ee]volution*)
-          
-  read_ascii 4 <<-EOF
+            read_ascii 4 <<-EOF
       ${c7},coddoc'
    'cddddddddddc'
  'ddd${c2}OWWXXXXXXK${c7}ddo.
