@@ -26,13 +26,13 @@ picture"!
 ## OS support
 
 - **Linux**
-    - Alpine Linux, Arch Linux, Arco Linux, Artix Linux, CentOS, Dahlia, Debian, Devuan, Elementary, EndeavourOS, EvolutionOS, Fedora, Garuda Linux, Gentoo, Guix, Hyperbola, instantOS, KISS Linux, Linux Lite, Linux Mint, Mageia, Manjaro, MX Linux, NixOS, OpenSUSE, Parabola, Pop!\_OS, PureOS, Slackware, Solus, Ubuntu and Void Linux.
+    - Alpine Linux, Arch Linux, Arco Linux, Artix Linux, AmogOS, CentOS, Dahlia, Debian, Devuan, Elementary, EndeavourOS, EvolutionOS, Fedora, Garuda Linux, Gentoo, Guix, Hyperbola, instantOS, KISS Linux, Linux Lite, Linux Mint, Mageia, Manjaro, MorphOS, MX Linux, NixOS, OpenSUSE, Parabola, Pop!\_OS, PureOS, Slackware, Solus, Ubuntu and Void Linux.
     - All other distributions are supported with a generic penguin logo.
 - **Android**
 - **BSD**
     - DragonflyBSD, FreeBSD, NetBSD and OpenBSD.
 - **Windows**
-    - Windows subsystem for Linux.
+    - Windows subsystem for Linux, Cygwin, MSYS and MinGW.
 - **Haiku**
 - **MacOS**
 - **Minix**
@@ -42,7 +42,7 @@ picture"!
 
 ## Configuration
 
-`pfetch` is configured through environment variables.
+`pfetch` is configured through environment variables, or using its configuration file in ``${XDG_CONFIG_HOME}/pfetch.conf` (or `~/.config/pfetch.conf`)
 
 ```sh
 # Which information to display.

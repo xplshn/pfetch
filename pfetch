@@ -110,11 +110,11 @@ log() {
     # $[6] /home/goldie $
 
     # End here if no data was found.
-    [ "$2" ] || return
+    [ -n "$2" ] || return
 
     # Store the values of '$1' and '$3' as we reset the argument list below.
     name=$1
-    use_seperator=$3
+    use_separator=$3
 
     # Use 'set --' as a means of stripping all leading and trailing
     # white-space from the info string. This also normalizes all
@@ -140,7 +140,7 @@ log() {
     esc_p SGR 0
 
     # Print the info name and info data separator, if applicable.
-    [ "$use_seperator" ] || printf %s "$PF_SEP"
+    [ -n "$use_separator" ] || printf %s "$PF_SEP"
 
     # Move the cursor backward the length of the *current* info name and
     # then move it forwards the length of the *longest* info name. This
@@ -175,20 +175,26 @@ get_title() {
 
     # If the hostname is still not found, fallback to the contents of the
     # /etc/hostname file.
-    [ "$hostname" ] || read -r hostname < /etc/hostname
+    [ -n "$hostname" ] || read -r hostname < /etc/hostname
 
-    # Add escape sequences for coloring to user and host name. As we embed
+    # If the hostname is STILL not found, set it as "unknown"
+    [ -n "$hostname" ] || hostname="unknown"
+
+    # Add escape sequences for coloring to user and host name unless $PF_COL3=COL1. As we embed
     # them directly in the arguments passed to log(), we cannot use esc_p().
-    esc SGR 1
-    user=$e$user
-    esc SGR "3${PF_COL3:-1}"
-    user=$e$user
-    esc SGR 1
-    user=$user$e
-    esc SGR 1
-    hostname=$e$hostname
-    esc SGR "3${PF_COL3:-1}"
-    hostname=$e$hostname
+
+    if ! [ "$PF_COL3" = "COL1" ]; then
+        esc SGR 1
+        user=$e$user
+        esc SGR "3${PF_COL3:-1}"
+        user=$e$user
+        esc SGR 1
+        user=$user$e
+        esc SGR 1
+        hostname=$e$hostname
+        esc SGR "3${PF_COL3:-1}"
+        hostname=$e$hostname
+    fi
 
     log "${user}@${hostname}" " " " " >&6
 }
@@ -200,7 +206,7 @@ get_os() {
     #
     # On first run, this function displays _nothing_, only on the second
     # invocation is 'log()' called.
-    [ "$distro" ] && {
+    [ -n "$distro" ] && {
         log os "$distro" >&6
         return
     }
@@ -233,7 +239,7 @@ get_os() {
                 distro=$(lsb_release -sd)
 
             # Android detection works by checking for the existence of
-            # the follow two directories. I don't think there's a simpler
+            # the following two directories. I don't think there's a simpler
             # method than this.
             elif [ -d /system/app ] && [ -d /system/priv-app ]; then
                 distro="Android $(getprop ro.build.version.release)"
@@ -278,7 +284,7 @@ get_os() {
             #
             # If the kernel version string ends in "-Microsoft",
             # we're very likely running under Windows 10 in WSL1.
-            if [ "$WSLENV" ]; then
+            if [ -n "$WSLENV" ]; then
                 distro="${distro}${WSLENV+ on Windows 10 [WSL2]}"
 
             # Check to see if Linux is running in Windows 10 under
@@ -291,6 +297,19 @@ get_os() {
             elif [ -z "${kernel%%*-Microsoft}" ]; then
                 distro="$distro on Windows 10 [WSL1]"
             fi
+        ;;
+
+        (CYGWIN*|MSYS*|MINGW*|Windows_NT)
+            # Grab everything after the first instance of
+            # white-space in the command output of 'wmic'.
+            #
+            # The format of 'wmic' is as follows:
+            # Caption=Microsoft Windows 7 Enterprise
+            #
+            # This extracts:    ^^^^^^^^^^^^^^^^^^^^
+            read -r _ distro <<-EOF
+    			$(wmic os get Caption | head -n 2 | tail -n +2)
+			EOF
         ;;
 
         (Darwin*)
@@ -340,6 +359,8 @@ get_os() {
                 (10.15*) distro='macOS Catalina' ;;
                 (11*)    distro='macOS Big Sur' ;;
                 (12*)    distro='macOS Monterey' ;;
+                (13*)    distro='macOS Ventura' ;;
+                (14*)    distro='macOS Sonoma' ;;
                 (*)      distro='macOS' ;;
             esac
 
@@ -400,6 +421,10 @@ get_kernel() {
         (*BSD*|Haiku|Minix)
             return
         ;;
+        # Use wmic to get the OS version
+        (CYGWIN*|MSYS*|MINGW*|Windows_NT)
+            kernel=$(wmic os get Version | sed -n 2p)
+        ;;
     esac
 
     # '$kernel' is the cached output of 'uname -r'.
@@ -424,8 +449,8 @@ get_host() {
         ;;
 
         (NetBSD*)
-            host=$(sysctl -n machdep.dmi.system-vendor \
-                             machdep.dmi.system-product)
+            host=$(/sbin/sysctl -n machdep.dmi.system-vendor \
+                                   machdep.dmi.system-product)
         ;;
 
         (OpenBSD*)
@@ -434,6 +459,9 @@ get_host() {
 
         (*BSD* | Minix)
             host=$(sysctl -n hw.vendor hw.product)
+        ;;
+        (CYGWIN*|MSYS*|MINGW*|Windows_NT)
+            host=$(wmic computersystem get model | tail -n +2 | sed 's/.*=//g')
         ;;
     esac
 
@@ -485,8 +513,14 @@ get_uptime() {
     # converting that data into days, hours and minutes using simple
     # math.
     case $os in
-        (Linux* | Minix* | SerenityOS*)
-            IFS=. read -r s _ < /proc/uptime
+        (Linux*|Minix*|SerenityOS*|CYGWIN*|MSYS*|MINGW*|Windows_NT|NetBSD*)
+            if ! [ -r /proc/uptime ]; then
+                boot=$(date -d"$(uptime -s)" +%s)
+                now=$(date +%s)
+                s=$((now - boot))
+            else
+                IFS=. read -r s _ < /proc/uptime
+            fi
         ;;
 
         (Darwin* | *BSD* | DragonFly*)
@@ -506,6 +540,13 @@ get_uptime() {
             # The boot time is returned in microseconds, convert it to
             # regular seconds.
             s=$(($(system_time) / 1000000))
+        ;;
+
+        (MorphOS)
+            IFS=':, ' read -r _ _ _ _ h m _ <<-EOF
+				$(uptime)
+			EOF
+            s=$((${h:-0}*3600 + ${m:-0}*60))
         ;;
 
         (SunOS)
@@ -556,7 +597,7 @@ get_uptime() {
 
 get_pkgs() {
     # This works by first checking for which package managers are
-    # installed and finally by printing each package manager's
+    # installed and then by printing each package manager's
     # package list with each package one per line.
     #
     # The output from this is then piped to 'wc -l' to count each
@@ -575,6 +616,7 @@ get_pkgs() {
                 has apk        && apk info
                 has guix       && guix package --list-installed
                 has opkg       && opkg list-installed
+                has flatpak    && flatpak list
 
                 # Directories containing packages.
                 has kiss       && printf '%s\n' /var/db/kiss/installed/*/
@@ -589,6 +631,13 @@ get_pkgs() {
                     nix-store -q --requisites /run/current-system/sw
                     nix-store -q --requisites ~/.nix-profile
                 }
+            ;;
+
+            (CYGWIN*|MSYS*|MINGW*|Windows_NT)
+                # Commands which print packages one per line.
+                has scoop      && scoop list
+                has winget     && winget list
+                has pacman-key && pacman -Qq
             ;;
 
             (Darwin*)
@@ -660,14 +709,29 @@ get_pkgs() {
         esac | wc -l
     )
 
+    # universal package managers that are on many different systems
+    unipkgs=$(
+        {
+            has cargo      && cargo install --list | grep -v '^ '
+            has pipx       && pipx list
+        } | wc -l
+    )
+
     # 'wc -l' can have leading and/or trailing whitespace
     # depending on the implementation, so strip them.
     # Procedure explained at https://github.com/dylanaraps/pure-sh-bible
     # (trim-leading-and-trailing-white-space-from-string)
     packages=${packages#"${packages%%[![:space:]]*}"}
     packages=${packages%"${packages##*[![:space:]]}"}
+    unipkgs=${unipkgs#"${unipkgs%%[![:space:]]*}"}
+    unipkgs=${unipkgs%"${unipkgs##*[![:space:]]}"}
 
     case $os in
+        # scoop adds extra lines to be fancy
+        (CYGWIN*|MSYS*|MINGW*|Windows_NT)
+            has scoop && packages=$((packages - 5))
+        ;;
+
         # IRIX's package manager adds 3 lines of extra
         # output which we must account for here.
         (IRIX)
@@ -678,8 +742,11 @@ get_pkgs() {
         # which needs to be stripped.
         (OpenBSD)
             packages=$((packages))
+            unipkgs=$((unipkgs))
         ;;
     esac
+
+    packages=$((packages + unipkgs))
 
     case $packages in
         (1?*|[2-9]*)
@@ -693,7 +760,7 @@ get_memory() {
         # Used memory is calculated using the following "formula":
         # MemUsed = MemTotal + Shmem - MemFree - Buffers - Cached - SReclaimable
         # Source: https://github.com/KittyKatt/screenFetch/issues/386
-        (Linux*)
+        (Linux*|CYGWIN*|MSYS*|MINGW*|Windows_NT)
             # Parse the '/proc/meminfo' file splitting on ':' and 'k'.
             # The format of the file is 'key:   000kB' and an additional
             # split is used on 'k' to filter out 'kB'.
@@ -712,40 +779,27 @@ get_memory() {
                         mem_used=$((mem_used - val))
                     ;;
 
-                    # If detected this will be used over the above calculation
-                    # for mem_used. Available since Linux 3.14rc.
-                    # See kernel commit 34e431b0ae398fc54ea69ff85ec700722c9da773
-                    (MemAvailable)
-                        mem_avail=$val
-                    ;;
                 esac
             done < /proc/meminfo
 
-            case $mem_avail in
-                (*[0-9]*)
-                    mem_used=$(((mem_full - mem_avail) / 1024))
-                ;;
-
-                *)
-                    mem_used=$((mem_used / 1024))
-                ;;
-            esac
-
+            mem_used=$((mem_used / 1024))
             mem_full=$((mem_full / 1024))
         ;;
 
         # Used memory is calculated using the following "formula":
-        # (wired + active + occupied) * 4 / 1024
+        # (app + wired + occupied) * pagesize / 1024 / 1024
         (Darwin*)
+            hw_pagesize="$(sysctl -n hw.pagesize)"
             mem_full=$(($(sysctl -n hw.memsize) / 1024 / 1024))
+            pages_used="$(($(sysctl -n vm.page_pageable_internal_count) - $(sysctl -n vm.page_purgeable_count)))"
 
             # Parse the 'vmstat' file splitting on ':' and '.'.
             # The format of the file is 'key:   000.' and an additional
             # split is used on '.' to filter it out.
             while IFS=:. read -r key val; do
                 case $key in
-                    (*' wired'*|*' active'*|*' occupied'*)
-                        mem_used=$((mem_used + ${val:-0}))
+                    (*' wired'*|*' occupied'*)
+                        pages_used=$((pages_used + ${val:-0}))
                     ;;
                 esac
 
@@ -757,7 +811,7 @@ get_memory() {
                 $(vm_stat)
 			EOF
 
-            mem_used=$((mem_used * 4 / 1024))
+            mem_used=$((pages_used * hw_pagesize / 1024 / 1024))
         ;;
 
         (OpenBSD*)
@@ -855,6 +909,20 @@ get_memory() {
             mem_full=$(( mem_full / 1024))
         ;;
 
+        (MorphOS)
+            while read -r line _ mem_used mem_full _; do
+                case $line in
+                    (total)
+                        mem_used=$(( mem_used / 1024 / 1024))
+                        mem_full=$(( mem_full / 1024 / 1024))
+                        break
+                    ;;
+                esac
+            done <<-EOF
+                $(avail)
+			EOF
+        ;;
+
         (SunOS)
             hw_pagesize=$(pagesize)
 
@@ -939,10 +1007,81 @@ get_memory() {
     log memory "${mem_used:-?}M / ${mem_full:-?}M" >&6
 }
 
+get_disk() {
+    # Store the version of the 'df' command as the available
+    # flags, options and implementation differs between operating
+    # systems and we need to handle these edge-cases.
+    df_version=$(df --version 2>&1)
+
+    case $df_version in
+        # The 'df' command is from AIX.
+        *IMitv*)
+            set -- -P -g
+        ;;
+
+        # The 'df' command is from IRIX.
+        *befhikm*)
+            set -- -P -k
+        ;;
+
+        # The 'df' command is from OpenBSD.
+        *hiklnP*)
+            set -- -h
+        ;;
+
+        # The 'df' command is from Haiku and is wildly
+        # different and provides no workable output,
+        # end here.
+        *Tracker*) # Haiku
+            return
+        ;;
+
+        # From testing it is saffe to assume that
+        # any other 'df' version provides these flags.
+        *)
+            set -- -P -h
+		;;
+    esac
+
+    # Read the output of 'df' line by line. The first line
+    # contains header information for the "table" so it is
+    # skipped.
+    #
+    # The next lines are then split to grab the relevant
+    # information and thankfully the output remains the
+    # same between all but one 'df' implementation.
+    #
+    # TODO: Configure disks to send to 'df'. Do we need to
+    #       do this? I'd love to _not_ do it.
+	df "$@" / | while read -r name full used _ perc _; do
+		[ "$header" ] || { header=1; continue; }
+
+		case $df_version in
+			# The 'df' command is from IRIX.
+			*befhikm*)
+				used=$((used/1024/1024))G
+				full=$((full/1024/1024))G
+			;;
+		esac
+		#
+		# probably a better way to do this, but a simple fixs
+		case $os in
+			CYGWIN*|MSYS*|MINGW*|Windows_NT)
+				windisk=$(df -h | tail -n +2 | awk 'NR==1{print $4" / "$3,"("$6")"}')
+				log disk "$windisk" >&6
+			;;
+			*)
+				log disk "$used / $full ($perc)" >&6
+			;;
+		esac
+	done
+
+}
+
 get_wm() {
     case $os in
-        (Darwin*)
-            # Don't display window manager on macOS.
+        (Darwin*|CYGWIN*|MSYS*|MINGW*|Windows_NT)
+            # Don't display window manager on macOS or Windows.
         ;;
 
         (*)
@@ -995,7 +1134,7 @@ get_wm() {
             # Wayland) though it's a lot more complicated!
 
             # Don't display window manager if X isn't running.
-            [ "$DISPLAY" ] || return
+            [ -n "$DISPLAY" ] || return
 
             # This is a two pass call to xprop. One call to get the window
             # manager's ID and another to print its properties.
@@ -1095,7 +1234,7 @@ get_palette() {
         palette="$palette$e"
     }
 
-    # Print the palette with a new-line before and afterwards but no seperator.
+    # Print the palette with a new-line before and afterwards but no separator.
     printf '\n' >&6
     log "$palette
         " " " " " >&6
@@ -1208,6 +1347,21 @@ get_ascii() {
 			EOF
         ;;
 
+        ([Aa]mog[Oo][Ss]*)
+            read_ascii 4 <<-EOF
+				${c7}      -///:.
+				${c7}     smhhhhmh\`
+				${c7}    :NA${c4}mogO${c7}SNs
+				${c7}    hNNmmmmNNN
+				${c7}    NNNNNNNNNN
+				${c7}   :NNNNNNNNNN
+				${c7}   mNNssussNNN
+				${c7}  sNn:    sNNo
+				${c7}+ooo+     sNNo
+				${c7}        +oooo\`
+			EOF
+        ;;
+
         ([Bb]uildroot*)
             read_ascii 3 <<-EOF
 				${c3}   ___
@@ -1246,15 +1400,27 @@ get_ascii() {
 
         ([Cc]rystal*[Ll]inux)
             read_ascii 5 5 <<-EOF
-				${c5}        -//.     
-				${c5}      -//.       
-				${c5}    -//. .       
-				${c5}  -//.  '//-     
-				${c5} /+:      :+/    
-				${c5}  .//'  .//.     
-				${c5}    . .//.       
-				${c5}    .//.         
-				${c5}  .//.           
+				${c5}        -//.
+				${c5}      -//.
+				${c5}    -//. .
+				${c5}  -//.  '//-
+				${c5} /+:      :+/
+				${c5}  .//'  .//.
+				${c5}    . .//.
+				${c5}    .//.
+				${c5}  .//.
+			EOF
+        ;;
+		
+		CYGWIN*|MSYS*|MINGW*|Windows_NT)
+		    read_ascii 4 <<-EOF
+				${c4}######  ######
+				${c4}######  ######
+				${c4}######  ######
+				${c4}
+				${c4}######  ######
+				${c4}######  ######
+				${c4}######  ######
 			EOF
         ;;
 
@@ -1285,13 +1451,13 @@ get_ascii() {
 
 		([Dd]evuan*)
 			read_ascii 6 <<-EOF
-				${c4} ..:::.      
-				${c4}    ..-==-   
-				${c4}        .+#: 
-				${c4}         =@@ 
-				${c4}      :+%@#: 
-				${c4}.:=+#@@%*:   
-				${c4}#@@@#=:      
+				${c4} ..:::.
+				${c4}    ..-==-
+				${c4}        .+#:
+				${c4}         =@@
+				${c4}      :+%@#:
+				${c4}.:=+#@@%*:
+				${c4}#@@@#=:
 			EOF
 		;;
 
@@ -1344,7 +1510,7 @@ odddd${c2}OMXk00OkOO${c7}ddddo
 			EOF
         ;;
 
-        ([Ff]edora*)
+        ([Ff]edora*|[Nn]obara*)
             read_ascii 4 <<-EOF
 				        ${c4},'''''.
 				       ${c4}|   ,.  |
@@ -1594,6 +1760,17 @@ odddd${c2}OMXk00OkOO${c7}ddddo
 			EOF
         ;;
 
+        ([Mm]orphOS*)
+            read_ascii 1 <<-EOF
+				${c4}  __ \/ __
+				${c4} /o \{}/ o\\
+				${c4} \   ()   /
+				${c4}  \`> /\ <\`
+				${c4}  (o/\/\o)
+				${c4}   )    (
+			EOF
+        ;;
+
         ([Mm][Xx]*)
             read_ascii <<-EOF
 				${c7}    \\\\  /
@@ -1690,14 +1867,14 @@ odddd${c2}OMXk00OkOO${c7}ddddo
 
         ([Pp]op!_[Oo][Ss]*)
             read_ascii 6 <<-EOF
-				${c6}______
-				${c6}\\   _ \\        __
-				 ${c6}\\ \\ \\ \\      / /
-				  ${c6}\\ \\_\\ \\    / /
-				   ${c6}\\  ___\\  /_/
-				   ${c6} \\ \\    _
-				  ${c6} __\\_\\__(_)_
-				  ${c6}(___________)
+				${c6}     .///////,
+				${c6}   //${c7}76767${c6}//////
+				${c6}  //${c7}76${c6}//${c7}76${c6}//${c7}767${c6}//
+				${c6} ////${c7}7676'${c6}//${c7}76${c6}////
+				${c6} /////${c7}76${c6}////${c7}7${c6}/////
+				${c6}  /////${c7}76${c6}//${c7}76${c6}////
+				${c6}   ///${c7}76767676${c6}//
+				${c6}     \`///////'
 			EOF
         ;;
 
@@ -1749,7 +1926,7 @@ odddd${c2}OMXk00OkOO${c7}ddddo
 
         ([Ss]olus*)
             read_ascii 4 <<-EOF
-				${c6} 
+				${c6}
 				${c6}     /|
 				${c6}    / |\\
 				${c6}   /  | \\ _
@@ -1807,7 +1984,7 @@ odddd${c2}OMXk00OkOO${c7}ddddo
             # On no match of a distribution ascii art, this function calls
             # itself again, this time to look for a more generic OS related
             # ascii art (KISS Linux -> Linux).
-            [ "$1" ] || {
+            [ -n "$1" ] || {
                 get_ascii "$os"
                 return
             }
@@ -1839,7 +2016,7 @@ odddd${c2}OMXk00OkOO${c7}ddddo
     # This ensures that any variables defined in the while loop
     # are still accessible in the script.
     done <<-EOF
- 		$(printf %s "$ascii" | sed 's/\[3.m//g')
+ 		$(printf %s "$ascii" | awk '{gsub("\\[3.m","");print}')
 	EOF
 
     # Add a gap between the ascii art and the information.
@@ -1858,7 +2035,14 @@ odddd${c2}OMXk00OkOO${c7}ddddo
 main() {
     case $* in
         -v)
-            printf '%s 0.7.0\n' "${0##*/}"
+            printf '%s 1.0 (OldWorldOrdr fork)\n' "${0##*/}"
+            return 0
+        ;;
+
+        -u)
+            printf 'Updating...\n'
+            curl -s -o "$0" https://raw.githubusercontent.com/OldWorldOrdr/pfetch/master/pfetch
+            printf 'Done.\n'
             return 0
         ;;
 
@@ -1871,11 +2055,12 @@ main() {
         ;;
 
         *)
-            cat <<EOF
+            printf "%s" "\
 ${0##*/}     show system information
+${0##*/} -u  update to the latest version
 ${0##*/} -d  show stderr (debug mode)
 ${0##*/} -v  show version information
-EOF
+"
             return 0
         ;;
     esac
