@@ -1215,6 +1215,10 @@ get_editor() {
     log editor "${editor##*/}" >&6
 }
 
+get_term() {
+    log term "${TERMINAL:-$TERM}" >&6
+}
+
 get_palette() {
     # Print the first 8 terminal colors. This uses the existing
     # sequences to change text color with a sequence prepended
