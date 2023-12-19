@@ -1045,7 +1045,7 @@ get_disk() {
     if [ -z "$PF_DISKPATH" ]; then
         case "$distro" in
             iOS*)     "/private/var"      ;;
-            Android*) "/storage/emulated" ;;
+            Android*) "/data" ;;
         esac
         PF_DISKPATH="${_:-'/'}"
     fi
