@@ -26,7 +26,7 @@ picture"!
 ## OS support
 
 - **Linux**
-    - Alpine Linux, Arch Linux, Arco Linux, Artix Linux, AmogOS, CentOS, Dahlia, Debian, Devuan, Elementary, EndeavourOS, EvolutionOS, Fedora, Garuda Linux, Gentoo, Guix, Hyperbola, instantOS, KISS Linux, Linux Lite, Linux Mint, Mageia, Manjaro, MorphOS, MX Linux, NixOS, OpenSUSE, Parabola, Pop!\_OS, PureOS, Slackware, Solus, Ubuntu and Void Linux.
+    - Alpine Linux, Arch Linux, Arco Linux, Artix Linux, AmogOS, CentOS, Dahlia, Debian, Devuan, Elementary, EndeavourOS, EvolutionOS, Fedora, Garuda Linux, Gentoo, Guix, Hyperbola, instantOS, KISS Linux, Linux Lite, Linux Mint, Mageia, Manjaro, MX Linux, NixOS, OpenSUSE, Parabola, Pop!\_OS, PureOS, Slackware, Solus, Ubuntu and Void Linux.
     - All other distributions are supported with a generic penguin logo.
 - **Android**
 - **BSD**
@@ -34,11 +34,12 @@ picture"!
 - **Windows**
     - Windows subsystem for Linux, Cygwin, MSYS and MinGW.
 - **Haiku**
-- **MacOS**
+- **macOS**
 - **Minix**
 - **Solaris**
 - **IRIX**
 - **SerenityOS**
+- **MorphOS**
 
 ## Configuration
 
