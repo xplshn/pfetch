@@ -42,7 +42,7 @@ picture"!
 
 ## Configuration
 
-`pfetch` is configured through environment variables, or using its configuration file in `${XDG_CONFIG_HOME}/pfetch.conf`
+`pfetch` is configured through environment variables.
 
 ```sh
 # Which information to display.
