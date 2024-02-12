@@ -1250,10 +1250,6 @@ get_res() {
     log res "$resolution" >&6
 }
 
-get_ip(){
-	log ip "$(ip a | grep 'inet ' | awk '{print $2}' | grep -v '127.0.0.1')" >&6
-}
-
 get_palette() {
     # Print the first 8 terminal colors. This uses the existing
     # sequences to change text color with a sequence prepended
