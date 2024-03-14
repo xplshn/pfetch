@@ -87,7 +87,8 @@ PF_COL2=9
 
 # Color of title data:
 # Default: unset (auto)
-# Valid: 0-9
+# Valid: 0-9, COL1
+# Setting to COL1 makes the color the same as COL1
 PF_COL3=1
 
 # Alignment padding.
@@ -119,6 +120,19 @@ SHELL=""
 
 # Which desktop environment to display.
 XDG_CURRENT_DESKTOP=""
+
+# Show/Hide Package Manager names (like neofetch)
+# Default: off
+# Valid: on, off
+# Example:
+# on:   '1748 (rpm), 11 (flatpak)'
+# off:  '1759'
+PF_PACKAGE_MANAGERS=1
+
+# Disable individial package managers
+# Default: none
+# Valid: package manager name (first arguement passed to the get_single_pkg function)
+PF_DISABLED_PACKAGE_MANAGERS=""
 ```
 
 ## Credit
