@@ -130,9 +130,14 @@ XDG_CURRENT_DESKTOP=""
 PF_PACKAGE_MANAGERS=1
 
 # Disable individial package managers
-# Default: none
+# Default: unset (none)
 # Valid: package manager name (first arguement passed to the get_single_pkg function)
 PF_DISABLED_PACKAGE_MANAGERS=""
+
+# Override detected distro
+# Default unset (auto)
+# Valid: string (distro name)
+PF_DISTRO=""
 ```
 
 ## Credit
