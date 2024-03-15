@@ -737,7 +737,7 @@ get_pkgs() {
         ;;
 
         (SerenityOS)
-            get_single_pkg SerenityOS 0 sh -c 'while IFS=" " read -r type _; do [ "$type" != dependency ] && printf "\n"; done < /usr/Ports/packages.db'
+            get_single_pkg SerenityOS 0 sh -c "while IFS=" " read -r type _; do [ \"\$type\" != dependency ] && printf '\n'; done < /usr/Ports/packages.db"
         ;;
     esac
 
