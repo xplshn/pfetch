@@ -1533,15 +1533,15 @@ get_ascii() {
 
         ([Ee]volution*)
             read_ascii 4 <<-EOF
-      ${c7},coddoc'
-   'cddddddddddc'
- 'ddd${c2}OWWXXXXXXK${c7}ddo.
-.dddd${c2}OMX${c7}ddddddddddd.
-odddd${c2}OMXk00OkOO${c7}ddddo
-.dddd${c2}OMX${c7}kOOOxOkdddd.
- .ddd${c2}OWWXXXXXXK${c7}ddd'
-   'dddddddddddd'
-      'cddddd,
+				      ${c7},coddoc'
+				   'cddddddddddc'
+				 'ddd${c2}OWWXXXXXXK${c7}ddo.
+				.dddd${c2}OMX${c7}ddddddddddd.
+				odddd${c2}OMXk00OkOO${c7}ddddo
+				.dddd${c2}OMX${c7}kOOOxOkdddd.
+				 .ddd${c2}OWWXXXXXXK${c7}ddd'
+				   'dddddddddddd'
+				      'cddddd,
 			EOF
         ;;
 
