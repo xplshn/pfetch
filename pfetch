@@ -653,6 +653,8 @@ get_pkgs() {
             has radula     && get_single_pkg radula 0 radula -ch
             has flatpak    && get_single_pkg flatpak 0 flatpak list
             has snap       && get_single_pkg snap 0 snap list
+            has urpmq      && get_single_pkg urpmq 0 urpmq --list-media active
+            has birb       && get_single_pkg birb 0 birb --list-installed
 
             # Directories containing packages.
             has kiss       && get_single_pkg kiss 0 printf '%s\n' /var/db/kiss/installed/*/
