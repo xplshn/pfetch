@@ -659,7 +659,7 @@ get_pkgs() {
             # Directories containing packages.
             has kiss       && get_single_pkg kiss 0 printf '%s\n' /var/db/kiss/installed/*/
             has cpt-list   && get_single_pkg cpt-list 0 printf '%s\n' /var/db/cpt/installed/*/
-            has brew       && get_single_pkg homebrew 0 printf '%s\n' "$(brew --cellar)/"*
+            has brew       && get_single_pkg homebrew 0 printf '%s\n' "$(brew --cellar)/"* "$(brew --caskroom)/"*
             has emerge     && get_single_pkg portage 0 printf '%s\n' /var/db/pkg/*/*/
             has pkgtool    && get_single_pkg pkgtool 0 printf '%s\n' /var/log/packages/*
             has eopkg      && get_single_pkg eopkg 0 printf '%s\n' /var/lib/eopkg/package/*
@@ -682,7 +682,7 @@ get_pkgs() {
             has dpkg       && get_single_pkg dpkg 0 dpkg-query -f '.\n' -W
 
             # Directories containing packages.
-            has brew       && get_single_pkg homebrew 0 printf '%s\n' /usr/local/Cellar/*
+            has brew       && get_single_pkg homebrew 0 printf '%s\n' "$(brew --cellar)/"* "$(brew --caskroom)/"*
 
             # 'port' prints a single line of output to 'stdout'
             # when no packages are installed and exits with
