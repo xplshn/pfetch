@@ -40,6 +40,9 @@ picture"!
 - **IRIX**
 - **SerenityOS**
 - **MorphOS**
+- **Hurd**
+    - Arch Hurd, Debian
+    - All other distributions are supported with a generic Hurd logo.
 
 ## Configuration
 
