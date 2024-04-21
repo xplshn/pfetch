@@ -441,9 +441,12 @@ get_host() {
             # Despite what these files are called, version doesn't
             # always contain the version nor does name always contain
             # the name.
-            read -r name    < /sys/devices/virtual/dmi/id/product_name
-            read -r version < /sys/devices/virtual/dmi/id/product_version
-            read -r model   < /sys/firmware/devicetree/base/model
+            [ -f /sys/devices/virtual/dmi/id/product_name ] && \
+                read -r name < /sys/devices/virtual/dmi/id/product_name
+            [ -f /sys/devices/virtual/dmi/id/product_version ] && \
+                read -r version < /sys/devices/virtual/dmi/id/product_version
+            [ -f /sys/firmware/devicetree/base/model ] && \
+                read -r model < /sys/firmware/devicetree/base/model
 
             host="$name $version $model"
         ;;
