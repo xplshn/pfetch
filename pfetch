@@ -745,8 +745,8 @@ get_pkgs() {
     esac
 
     # package managers that are on many different systems
-    has cargo      && get_single_pkg cargo cargo install --list | grep -v '^ '
-    has pipx       && get_single_pkg pipx pipx list
+    has cargo      && get_single_pkg cargo 0 sh -c 'cargo install --list | grep -v "^ "'
+    has pipx       && get_single_pkg pipx 0 pipx list
 
     case $total_pkgs in
         (1?*|[2-9]*)
