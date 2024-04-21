@@ -2138,7 +2138,7 @@ get_ascii() {
 main() {
     case $* in
         -v|--version)
-            printf '%s\n' "${0##*/} 1.0 (Un1q32 fork)"
+            printf '%s\n' "${0##*/} 1.0"
             return 0
         ;;
 
