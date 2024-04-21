@@ -2151,11 +2151,11 @@ main() {
         ;;
 
         *)
-            printf '%s' "\
+            cat <<EOF
 ${0##*/}     show system information
 ${0##*/} -d  debug mode
 ${0##*/} -v  show version
-"
+EOF
             return 0
         ;;
     esac
