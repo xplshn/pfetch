@@ -124,6 +124,12 @@ SHELL=""
 # Which desktop environment to display.
 XDG_CURRENT_DESKTOP=""
 
+# Override the value of os
+PF_OS=""
+
+# Override the value of host
+PF_HOST=""
+
 # Show/Hide Package Manager names (like neofetch)
 # Default: off
 # Valid: on, off
@@ -134,7 +140,7 @@ PF_PACKAGE_MANAGERS=1
 
 # Disable individial package managers
 # Default: unset (none)
-# Valid: package manager name (first arguement passed to the get_single_pkg function)
+# Valid: package manager name (first arguement passed to the count_single_pkg function)
 PF_DISABLED_PACKAGE_MANAGERS=""
 ```
 
