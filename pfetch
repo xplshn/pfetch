@@ -1252,7 +1252,7 @@ get_editor() {
     log editor "${editor##*/}" >&6
 }
 
-get_terminal() {
+get_term() {
     log term "${TERMINAL:-$TERM}" >&6
 }
 
