@@ -228,12 +228,6 @@ get_os() {
         return
     }
 
-    # allow the user to override the distro name
-    [ -n "$PF_DISTRO" ] && {
-        distro="$PF_DISTRO"
-        return
-    }
-
     case $os in
         (Linux*|GNU*)
             # Some Linux distributions (which are based on others)
