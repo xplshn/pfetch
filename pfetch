@@ -1258,11 +1258,11 @@ get_editor() {
     log editor "${editor##*/}" >&6
 }
 
-get_term() {
+get_terminal() {
     log term "${TERMINAL:-$TERM}" >&6
 }
 
-get_res() {
+get_resolution() {
     case $os in
         Linux*|GNU*|*BSD*)
             if has xdpyinfo; then
