@@ -223,14 +223,14 @@ get_os() {
     #
     # On first run, this function displays _nothing_, only on the second
     # invocation is 'log()' called.
-    [ -n "$distro" ] && {
+    if [ -n "$distro" ]; then
         if [ -n "$PF_OS" ]; then
             log os "$PF_OS" >&6
         else
             log os "$distro" >&6
         fi
         return
-    }
+    fi
 
     case $os in
         (Linux*|GNU*)
