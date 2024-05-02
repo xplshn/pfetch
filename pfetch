@@ -469,7 +469,10 @@ get_host() {
         ;;
 
         (Darwin* | FreeBSD* | DragonFly*)
-            host=$(sysctl -n hw.model)
+            case $distro in
+                iOS*) host=$(uname -m)           ;;
+                *)    host=$(sysctl -n hw.model) ;;
+            esac
         ;;
 
         (NetBSD*)
@@ -1278,13 +1281,11 @@ get_resolution() {
             fi
         ;;
         Darwin*)
-            if has system_profiler; then
-                resolution=$(system_profiler SPDisplaysDataType | grep Resolution | awk '{print $2 "x" $4}')
-            fi
+            has system_profiler && resolution=$(system_profiler SPDisplaysDataType | grep Resolution | awk '{print $2 "x" $4}')
         ;;
     esac
 
-    log res "$resolution" >&6
+    log resolution "$resolution" >&6
 }
 
 get_palette() {
@@ -2235,8 +2236,8 @@ EOF
 
     # Allow the user to specify the order and inclusion of information
     # functions through the 'PF_INFO' environment variable.
-    # shellcheck disable=2086
     [ "$PF_INFO" = "all" ] && PF_INFO="ascii title os host kernel uptime pkgs memory disk wm de shell editor term resolution palette"
+    # shellcheck disable=2086
     {
         # Disable globbing and set the positional parameters to the
         # contents of 'PF_INFO'.
