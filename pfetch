@@ -826,7 +826,9 @@ get_memory() {
         (Darwin*)
             hw_pagesize="$(sysctl -n hw.pagesize)"
             mem_full=$(($(sysctl -n hw.memsize) / 1024 / 1024))
-            pages_used="$(($(sysctl -n vm.page_pageable_internal_count) - $(sysctl -n vm.page_purgeable_count)))"
+            pages=$(sysctl -n vm.page_pageable_internal_count 2>/dev/null)
+            purge=$(sysctl -n vm.page_purgeable_count 2>/dev/null)
+            [ -n "$pages" ] && [ -n "$purge" ] && pages_used=$((pages - purge))
 
             # Parse the 'vmstat' file splitting on ':' and '.'.
             # The format of the file is 'key:   000.' and an additional
@@ -1276,7 +1278,9 @@ get_resolution() {
             fi
         ;;
         Darwin*)
-            resolution=$(system_profiler SPDisplaysDataType | grep Resolution | awk '{print $2 "x" $4}')
+            if has system_profiler; then
+                resolution=$(system_profiler SPDisplaysDataType | grep Resolution | awk '{print $2 "x" $4}')
+            fi
         ;;
     esac
 
