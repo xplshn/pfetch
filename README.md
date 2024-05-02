@@ -52,7 +52,7 @@ picture"!
 # Which information to display.
 # NOTE: If 'ascii' will be used, it must come first.
 # Default: first example below
-# Valid: space separated string
+# Valid: space separated string, or 'all'
 #
 # OFF by default: shell editor wm de palette disk term resolution
 PF_INFO="ascii title os host kernel uptime pkgs memory"
