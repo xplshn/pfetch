@@ -662,6 +662,10 @@ get_pkgs() {
     # The output from this is then piped to 'wc -l' to count each
     # line, giving us the total package count of whatever package
     # managers are installed.
+
+    # None of this works if 'wc' isn't installed.
+    has wc || return
+
     case $os in
         (Linux*)
             # Commands which print packages one per line.
