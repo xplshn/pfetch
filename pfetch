@@ -168,7 +168,9 @@ wmic_read() {
         while IFS= read -r line; do
             if [ -n "$line" ]; then
                 # skip if the line starts with whitespace
-                printf '%s' "$line" | grep -q '^[[:space:]]' && continue
+                case $line in
+                    [[:space:]]*) continue ;;
+                esac
                 # remove trailing whitespace
                 printf '%s\n' "${line%"${line##*[![:space:]]}"}"
             fi
