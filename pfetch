@@ -1287,15 +1287,17 @@ get_term() {
 get_resolution() {
     case $os in
         Linux*|GNU*|*BSD*)
-            if has xdpyinfo; then
-                resolution=$(xdpyinfo | grep 'dimensions')
-                resolution="${resolution#*dimensions:}"
-                resolution="${resolution% pixels*}"
-            elif has xrandr; then
-                # shellcheck disable=2063
-                resolution="$(xrandr | grep '*')"
-                resolution="${resolution#* }"
-                resolution="${resolution% *}"
+            if [ -n "$DISPLAY" ]; then
+                if has xdpyinfo; then
+                    resolution=$(xdpyinfo | grep 'dimensions')
+                    resolution="${resolution#*dimensions:}"
+                    resolution="${resolution% pixels*}"
+                elif has xrandr; then
+                    # shellcheck disable=2063
+                    resolution="$(xrandr | grep '*')"
+                    resolution="${resolution#* }"
+                    resolution="${resolution% *}"
+                fi
             fi
         ;;
         Darwin*)
