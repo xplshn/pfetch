@@ -625,6 +625,21 @@ get_uptime() {
     log uptime "${uptime:-0m}" >&6
 }
 
+nix_pkg_count() {
+    nix-store -q --requisites /run/current-system/sw
+    nix-store -q --requisites ~/.nix-profile
+}
+
+cargo_pkg_count() {
+    cargo install --list | grep -v "^ "
+}
+
+serenity_pkg_count() {
+    while IFS=" " read -r type _; do
+    [ "$type" != dependency ] && printf "\n"
+    done < /usr/Ports/packages.db
+}
+
 count_single_pkg() {
     # This function is used to count the number of packages installed
     # from each individual package manager.
@@ -695,7 +710,7 @@ get_pkgs() {
             has eopkg      && count_single_pkg eopkg 0 printf '%s\n' /var/lib/eopkg/package/*
 
             # 'nix' requires two commands.
-            has nix-store  && count_single_pkg nix sh -c 'nix-store -q --requisites /run/current-system/sw; nix-store -q --requisites ~/.nix-profile'
+            has nix-store  && count_single_pkg nix 0 nix_pkg_count
         ;;
 
         (CYGWIN*|MSYS*|MINGW*|Windows_NT)
@@ -771,12 +786,12 @@ get_pkgs() {
         ;;
 
         (SerenityOS)
-            count_single_pkg SerenityOS 0 sh -c "while IFS=" " read -r type _; do [ \"\$type\" != dependency ] && printf '\n'; done < /usr/Ports/packages.db"
+            count_single_pkg SerenityOS 0 serenity_pkg_count
         ;;
     esac
 
     # package managers that are on many different systems
-    has cargo      && count_single_pkg cargo 0 sh -c 'cargo install --list | grep -v "^ "'
+    has cargo      && count_single_pkg cargo 0 cargo_pkg_count
     has pipx       && count_single_pkg pipx 0 pipx list
 
     case $total_pkgs in
