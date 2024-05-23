@@ -1154,7 +1154,7 @@ get_disk() {
             full=$((full / 1024 / 1024))G
         fi
     } <<-EOF
-        $(df "$@" "$PF_DISKPATH")
+		$(df "$@" "$PF_DISKPATH")
 	EOF
 
     log disk "$used / $full ($perc)" >&6
