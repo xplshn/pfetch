@@ -631,7 +631,14 @@ nix_pkg_count() {
 }
 
 cargo_pkg_count() {
-    cargo install --list | grep -v "^ "
+    while IFS= read -r line; do
+        case $line in
+            ' '*) continue ;;
+        esac
+        printf '%s\n' "$line"
+    done <<-EOF
+		$(cargo install --list)
+	EOF
 }
 
 serenity_pkg_count() {
