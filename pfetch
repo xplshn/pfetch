@@ -165,6 +165,7 @@ log() {
 wmic_read() {
     # This function is used to remove useless garbage from wmic output.
     {
+        read -r line # discard the first line
         while IFS= read -r line; do
             if [ -n "$line" ]; then
                 # skip if the line starts with whitespace
@@ -176,7 +177,7 @@ wmic_read() {
             fi
         done
     } <<-EOF
-        $(wmic "$@")
+		$(wmic "$@")
 	EOF
 }
 
