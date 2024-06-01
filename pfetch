@@ -1374,7 +1374,7 @@ strip_color_code_stuff() {
     # This function is used to strip '\033[3Xm' color codes from the ascii art
     # so they don't affect the width variable.
     if has awk; then
-        # prefer awk, as toybox sed is totally broken
+        # prefer awk, as some versions of Android shipped with a broken 'sed' command
         awk '{gsub("\\[3.m","");print}'
     elif has sed; then
         sed 's/\[3.m//g'
