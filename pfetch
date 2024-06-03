@@ -1083,6 +1083,9 @@ get_memory() {
 }
 
 get_disk() {
+    # Fail if 'df' isn't installed.
+    has df || return
+
     # Store the version of the 'df' command as the available
     # flags, options and implementation differs between operating
     # systems and we need to handle these edge-cases.
@@ -1139,6 +1142,9 @@ get_disk() {
         esac
     fi
 
+    # Fail if 'df' fails to run.
+    df "$@" "$PF_DISKPATH" >/dev/null 2>&1 || return
+
     # Read the output of 'df' line by line. The first line
     # contains header information for the "table" so it is
     # skipped.
@@ -1148,7 +1154,7 @@ get_disk() {
     # same between all but one 'df' implementation.
     {
         read -r _ # discard the first line
-        read -r name full used _ perc _
+        read -r _ full used _ perc _
 
         if [ -n "$irix_df" ]; then
             used=$((used / 1024 / 1024))G
