@@ -686,6 +686,11 @@ count_single_pkg() {
     else
         pkgs="$pkgs, $count ($pkgmgr)"
     fi
+    if [ -z "$tiny_pkgs" ]; then
+        tiny_pkgs="$pkgmgr"
+    else
+        tiny_pkgs="$tiny_pkgs, $pkgmgr"
+    fi
 }
 
 get_pkgs() {
@@ -816,6 +821,8 @@ get_pkgs() {
     if [ $total_pkgs -gt 0 ]; then
         if [ "$PF_PACKAGE_MANAGERS" = "on" ]; then
             log pkgs "$pkgs" >&6
+        elif [ "$PF_PACKAGE_MANAGERS" = "tiny" ]; then
+            log pkgs "$total_pkgs ($tiny_pkgs)" >&6
         else
             log pkgs "$total_pkgs" >&6
         fi

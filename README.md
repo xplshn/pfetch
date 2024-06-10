@@ -130,11 +130,12 @@ PF_OS=""
 # Override the value of host
 PF_HOST=""
 
-# Show/Hide Package Manager names (like neofetch)
+# Show/Hide Package Manager names
 # Default: off
-# Valid: on, off
+# Valid: on, tiny, off
 # Example:
 # on:   '1748 (rpm), 11 (flatpak)'
+# tiny: '1759 (rpm, flatpak)'
 # off:  '1759'
 PF_PACKAGE_MANAGERS=1
 
