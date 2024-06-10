@@ -700,6 +700,8 @@ get_pkgs() {
     # None of this works if 'wc' isn't installed.
     has wc || return
 
+    total_pkgs=0
+
     case $os in
         (Linux*)
             # Commands which print packages one per line.
@@ -811,15 +813,13 @@ get_pkgs() {
     has cargo      && count_single_pkg cargo 0 cargo_pkg_count
     has pipx       && count_single_pkg pipx 0 pipx list
 
-    case $total_pkgs in
-        (1?*|[2-9]*)
-            if [ "$PF_PACKAGE_MANAGERS" = "on" ]; then
-                log pkgs "$pkgs" >&6
-            else
-                log pkgs "$total_pkgs" >&6
-            fi
-        ;;
-    esac
+    if [ $total_pkgs -gt 0 ]; then
+        if [ "$PF_PACKAGE_MANAGERS" = "on" ]; then
+            log pkgs "$pkgs" >&6
+        else
+            log pkgs "$total_pkgs" >&6
+        fi
+    fi
 }
 
 get_memory() {
