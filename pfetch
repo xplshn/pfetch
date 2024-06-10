@@ -782,7 +782,7 @@ get_pkgs() {
         ;;
 
         (NetBSD*)
-            has pkg_info && count_single_pkg pkgsrc 0 pkg_info
+            [ -x /usr/sbin/pkg_info ] && count_single_pkg pkgsrc 0 /usr/sbin/pkg_info
         ;;
 
         (Haiku)
