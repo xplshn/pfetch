@@ -137,7 +137,7 @@ PF_HOST=""
 # on:   '1748 (rpm), 11 (flatpak)'
 # tiny: '1759 (rpm, flatpak)'
 # off:  '1759'
-PF_PACKAGE_MANAGERS=1
+PF_PACKAGE_MANAGERS="on"
 
 # Disable individial package managers
 # Default: unset (none)
