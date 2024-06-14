@@ -753,7 +753,7 @@ get_pkgs() {
                 count_single_pkg scoop 1 printf '%s\n' "$scoopapps"/*
             }
             has winget     && count_single_pkg winget 0 winget list
-            has chocolatey && count_single_pkg chocolatey 0 choco list --local-only
+            has choco      && count_single_pkg chocolatey 0 choco list --local-only
             has pacman-key && count_single_pkg pacman 0 pacman -Qq
         ;;
 
