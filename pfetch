@@ -177,7 +177,7 @@ wmic_read() {
             fi
         done
     } <<-EOF
-		$(wmic "$@")
+		$(wmic.exe "$@")
 	EOF
 }
 
