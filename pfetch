@@ -312,6 +312,11 @@ get_os() {
             if [ -n "$WSLENV" ]; then
                 distro="${distro}${WSLENV+ on Windows [WSL2]}"
 
+            # If the kernel version string ends in "-WSL2", we're
+            # very likely running under Windows in WSL2.
+            elif [ -z "${kernel%%*-WSL2}" ]; then
+                distro="$distro on Windows [WSL2]"
+
             # Check to see if Linux is running in Windows under
             # WSL2 (Windows subsystem for Linux [version 2]) and
             # append a string accordingly.
