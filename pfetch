@@ -1098,7 +1098,8 @@ get_memory() {
         ;;
     esac
 
-    [ -n "$mem_used" ] && [ -n "$mem_full" ] && log memory "${mem_used}M / ${mem_full}M" >&6
+    [ -n "$mem_used" ] && [ -n "$mem_full" ] && \
+        log memory "${mem_used}M / ${mem_full}M" >&6
 }
 
 get_disk() {
