@@ -1365,7 +1365,9 @@ get_resolution() {
             fi
         ;;
         CYGWIN*|MSYS*|MINGW*|Windows_NT)
-            resolution="$(wmic_read path Win32_VideoController get CurrentHorizontalResolution)x$(wmic_read path Win32_VideoController get CurrentVerticalResolution)"
+            width=$(wmic_read path Win32_VideoController get CurrentHorizontalResolution)
+            height=$(wmic_read path Win32_VideoController get CurrentVerticalResolution)
+            resolution="${width}x${height}"
         ;;
     esac
 
@@ -2282,11 +2284,9 @@ main() {
         ;;
 
         *)
-            cat <<EOF
-${0##*/}     show system information
-${0##*/} -d  debug mode
-${0##*/} -v  show version
-EOF
+            printf '%s\n' "${0##*/}     show system information"
+            printf '%s\n' "${0##*/} -d  debug mode"
+            printf '%s\n' "${0##*/} -v  show version"
             return 0
         ;;
     esac
@@ -2335,7 +2335,8 @@ EOF
 
     # Allow the user to specify the order and inclusion of information
     # functions through the 'PF_INFO' environment variable.
-    [ "$PF_INFO" = "all" ] && PF_INFO="ascii title os host kernel uptime pkgs memory disk wm de shell editor term resolution palette"
+    [ "$PF_INFO" = "all" ] && \
+        PF_INFO="ascii title os host kernel uptime pkgs memory disk wm de shell editor term resolution palette"
     # shellcheck disable=2086
     {
         # Disable globbing and set the positional parameters to the
