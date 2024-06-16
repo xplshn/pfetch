@@ -2351,7 +2351,7 @@ main() {
         # "info names" for output alignment. The option names and subtitles
         # match 1:1 so this is thankfully simple.
         for info do
-            command -v "get_$info" >/dev/null || continue
+            has "get_$info" || continue
 
             # This was a ternary operation but they aren't supported in
             # Minix's shell.
