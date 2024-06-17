@@ -488,8 +488,6 @@ get_host() {
         ;;
 
         (OpenBSD*)
-            product=$(sysctl -n hw.product)
-            version=$(sysctl -n hw.version)
             host="$(sysctl -n hw.product) $(sysctl -n hw.version)"
         ;;
 
