@@ -385,6 +385,7 @@ get_os() {
                 (12*)    distro="macOS $mac_version Monterey"        ;;
                 (13*)    distro="macOS $mac_version Ventura"         ;;
                 (14*)    distro="macOS $mac_version Sonoma"          ;;
+                (15*)    distro="macOS $mac_version Sequoia"         ;;
                 (*)      distro="macOS $mac_version"                 ;;
             esac
 
