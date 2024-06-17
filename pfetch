@@ -489,7 +489,7 @@ get_host() {
         ;;
 
         (OpenBSD*)
-            host=$(sysctl -n hw.version)
+            host="$(sysctl -n hw.product) $(sysctl -n hw.version)"
         ;;
 
         (*BSD*|Minix)
