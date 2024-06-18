@@ -723,7 +723,7 @@ get_pkgs() {
             has apk        && count_single_pkg apk 0 apk_pkg_count
             has guix       && count_single_pkg guix 0 guix package --list-installed
             has opkg       && count_single_pkg opkg 0 opkg list-installed
-            has radula     && count_single_pkg radula 0 radula -ch
+            has rad        && count_single_pkg rad 0 rad -cl
             has flatpak    && count_single_pkg flatpak 0 flatpak list
             has snap       && count_single_pkg snap 0 snap list
             has urpmq      && count_single_pkg urpmq 0 urpmq --list-media active
