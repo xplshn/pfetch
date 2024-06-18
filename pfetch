@@ -255,8 +255,8 @@ get_os() {
             # This applies only to distributions which follow the standard
             # by shipping unmodified identification files and packages
             # from their respective upstreams.
-            if has lsb_release; then
-                distro=$(lsb_release -sd)
+            if has lsb_release && distro=$(lsb_release -sd); then
+                :
 
             # Android detection works by checking for the existence of
             # the following two directories. I don't think there's a simpler
