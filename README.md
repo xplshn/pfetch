@@ -32,7 +32,7 @@ picture"!
 - **BSD**
     - DragonflyBSD, FreeBSD, NetBSD and OpenBSD.
 - **Windows**
-    - Windows subsystem for Linux, Cygwin, MSYS and MinGW.
+    - WSL, Cygwin, MSYS and MinGW.
 - **Haiku**
 - **macOS**
 - **Minix**
