@@ -141,7 +141,7 @@ PF_PACKAGE_MANAGERS="on"
 
 # Disable individial package managers
 # Default: unset (none)
-# Valid: package manager name (first arguement passed to the count_single_pkg function)
+# Valid: package manager name (first arguement passed to the count_pkg function)
 PF_DISABLED_PACKAGE_MANAGERS=""
 
 # Mount point for the disk you want to display in disk info
