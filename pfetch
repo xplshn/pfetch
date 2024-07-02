@@ -476,11 +476,15 @@ get_host() {
             host="$name $version $model"
         ;;
 
-        (Darwin*|FreeBSD*|DragonFly*|NetBSD*)
+        (Darwin*|FreeBSD*|DragonFly*)
             case $distro in
                 iOS*) host=$(uname -m)           ;;
                 *)    host=$(sysctl -n hw.model) ;;
             esac
+        ;;
+
+        (NetBSD*)
+            host=$(/sbin/sysctl -n hw.model)
         ;;
 
         (OpenBSD*)
