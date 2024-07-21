@@ -1406,7 +1406,7 @@ get_palette() {
 }
 
 strip_color_code_stuff() {
-    # This function is used to strip '\033[3Xm' color codes from the ascii art
+    # This function is used to strip '\033[3*m' color codes from the ascii art
     # so they don't affect the width variable.
     if has awk; then
         # prefer awk, as some versions of Android shipped with a broken 'sed' command
