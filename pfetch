@@ -1408,17 +1408,19 @@ get_palette() {
 strip_color_code_stuff() {
     # This function is used to strip '\033[3*m' color codes from the ascii art
     # so they don't affect the width variable.
-    if has awk; then
-        # prefer awk, as some versions of Android shipped with a broken 'sed' command
-        awk '{gsub("\\[3.m","");print}'
-    elif has sed; then
-        sed 's/\[3.m//g'
-    else
-        # Just print the input if no sed or awk
-        while IFS= read -r line; do
-            printf '%s\n' "$line"
+    while IFS= read -r line; do
+        while :; do
+            case $line in
+                *\[3*m*)
+                    line="${line%%[3*m*}${line#*[3*m}"
+                ;;
+                *)
+                    break
+                ;;
+            esac
         done
-    fi
+        printf '%s\n' "$line"
+    done
 }
 
 get_ascii() {
