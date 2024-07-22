@@ -2279,6 +2279,8 @@ get_ascii() {
 }
 
 main() {
+    [ -n "$ZSH_VERSION" ] && emulate sh
+
     case $* in
         -v|--version)
             printf '%s 1.2.0\n' "${0##*/}"
