@@ -1412,7 +1412,7 @@ strip_color_code_stuff() {
         while :; do
             case $line in
                 *\[3*m*)
-                    line="${line%%[3*m*}${line#*[3*m}"
+                    line="${line%%\[3*m*}${line#*\[3*m}"
                 ;;
                 *)
                     break
