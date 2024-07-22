@@ -4,6 +4,9 @@
 
 # Wrapper around all escape sequences used by pfetch to allow for
 # greater control over which sequences are used (if any at all).
+
+[ -n "$ZSH_VERSION" ] && emulate sh
+
 esc() {
     case $1 in
         CUU) e="${esc_c}[${2}A" ;; # cursor up
@@ -2279,8 +2282,6 @@ get_ascii() {
 }
 
 main() {
-    [ -n "$ZSH_VERSION" ] && emulate sh
-
     case $* in
         -v|--version)
             printf '%s 1.2.0\n' "${0##*/}"
