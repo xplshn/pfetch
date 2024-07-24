@@ -161,7 +161,7 @@ log() {
 }
 
 wmic_read() {
-    # This function is used to remove useless garbage from wmic output.
+    # This function is used to remove garbage from the output of 'wmic'.
     {
         read -r line # discard the first line
         while IFS= read -r line; do
