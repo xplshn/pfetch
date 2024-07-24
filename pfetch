@@ -485,8 +485,9 @@ get_host() {
         ;;
 
         (Darwin*|FreeBSD*|DragonFly*)
+            # '$arch' is the cached output from 'uname -m'.
             case $distro in
-                iOS*) host=$(uname -m)           ;;
+                iOS*) host=$arch                 ;;
                 *)    host=$(sysctl -n hw.model) ;;
             esac
         ;;
