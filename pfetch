@@ -655,7 +655,7 @@ nix_pkg_count() {
 cargo_pkg_count() {
     while IFS= read -r line; do
         case $line in
-            ' '*) continue ;;
+            ' '*|'') continue ;;
         esac
         printf '%s\n' "$line"
     done <<-EOF
