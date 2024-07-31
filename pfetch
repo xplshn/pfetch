@@ -2275,7 +2275,7 @@ get_ascii() {
 	EOF
 
     # Add a gap between the ascii art and the information.
-    ascii_width=$((ascii_width + 4))
+    ascii_width=$((ascii_width + 3))
 
     # Print the ascii art and position the cursor back where we
     # started prior to printing it.
