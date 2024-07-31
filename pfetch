@@ -887,7 +887,7 @@ get_memory() {
         # Used memory is calculated using the following "formula":
         # (app + wired + occupied) * pagesize / 1024 / 1024
         (Darwin*)
-            # Some older jailbroken iOS devices don't have 'vm_stat'.
+            # Some older iOS devices don't have 'vm_stat'.
             has vm_stat || return
 
             # Older kernels don't have 'vm.page_pageable_internal_count'.
