@@ -1109,8 +1109,18 @@ get_memory() {
         ;;
     esac
 
-    [ -n "$mem_used" ] && [ -n "$mem_full" ] &&
+    if [ -n "$mem_used" ] && [ -n "$mem_full" ]; then
+        if [ -n "$ZSH_VERSION" ]; then
+            # Zsh doesn't truncate the decimal part of a number when
+            # dividing, so we need to do it manually.
+            case $mem_used in
+                (*.*)
+                    mem_used=${mem_used%.*}
+                ;;
+            esac
+        fi
         log memory "${mem_used}M / ${mem_full}M" >&6
+    fi
 }
 
 get_disk() {
