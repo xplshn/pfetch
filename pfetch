@@ -1409,24 +1409,6 @@ get_palette() {
         " " " " " >&6
 }
 
-strip_color_code_stuff() {
-    # This function is used to strip '\033[3Xm' color codes from the ascii art
-    # so they don't affect the width variable.
-    while IFS= read -r line; do
-        while :; do
-            case $line in
-                *\[3?m*)
-                    line="${line%%\[3?m*}${line#*\[3?m}"
-                ;;
-                *)
-                    break
-                ;;
-            esac
-        done
-        printf '%s\n' "$line"
-    done
-}
-
 get_ascii() {
     # This is a simple function to read the contents of
     # an ascii file from 'stdin'. It allows for the use
@@ -2253,7 +2235,20 @@ get_ascii() {
     #
     # Iterate over each line of the ascii art to retrieve the above
     # information.
-    while read -r line; do
+    while IFS= read -r line; do
+        # Strip '\033[3Xm' color codes from the ascii art
+        # so they don't affect the width variable.
+        while true; do
+            case $line in
+                *\[3?m*)
+                    line="${line%%\[3?m*}${line#*\[3?m}"
+                ;;
+                *)
+                    break
+                ;;
+            esac
+        done
+
         ascii_height=$((${ascii_height:-0} + 1))
 
         # This was a ternary operation but they aren't supported in
@@ -2266,7 +2261,7 @@ get_ascii() {
     # This ensures that any variables defined in the while loop
     # are still accessible in the script.
     done <<-EOF
-		$(printf %s "$ascii" | strip_color_code_stuff)
+		$(printf %s "$ascii")
 	EOF
 
     # Add a gap between the ascii art and the information.
