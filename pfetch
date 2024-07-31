@@ -1111,8 +1111,8 @@ get_memory() {
 
     if [ -n "$mem_used" ] && [ -n "$mem_full" ]; then
         if [ -n "$ZSH_VERSION" ]; then
-            # Zsh doesn't truncate the decimal part of a number when
-            # dividing, so we need to do it manually.
+            # Zsh has decimal output here, I'm not sure why.
+            # This removes the decimal point and everything after it.
             case $mem_used in
                 (*.*)
                     mem_used=${mem_used%.*}
