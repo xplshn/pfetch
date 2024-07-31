@@ -474,11 +474,11 @@ get_host() {
             # Despite what these files are called, version doesn't
             # always contain the version nor does name always contain
             # the name.
-            [ -f /sys/devices/virtual/dmi/id/product_name ] && \
+            [ -f /sys/devices/virtual/dmi/id/product_name ] &&
                 read -r name < /sys/devices/virtual/dmi/id/product_name
-            [ -f /sys/devices/virtual/dmi/id/product_version ] && \
+            [ -f /sys/devices/virtual/dmi/id/product_version ] &&
                 read -r version < /sys/devices/virtual/dmi/id/product_version
-            [ -f /sys/firmware/devicetree/base/model ] && \
+            [ -f /sys/firmware/devicetree/base/model ] &&
                 read -r model < /sys/firmware/devicetree/base/model
 
             host="$name $version $model"
@@ -1109,7 +1109,7 @@ get_memory() {
         ;;
     esac
 
-    [ -n "$mem_used" ] && [ -n "$mem_full" ] && \
+    [ -n "$mem_used" ] && [ -n "$mem_full" ] &&
         log memory "${mem_used}M / ${mem_full}M" >&6
 }
 
@@ -2349,7 +2349,7 @@ main() {
 
     # Allow the user to specify the order and inclusion of information
     # functions through the 'PF_INFO' environment variable.
-    [ "$PF_INFO" = "all" ] && \
+    [ "$PF_INFO" = "all" ] &&
         PF_INFO="ascii title os host kernel uptime pkgs memory disk wm de shell editor term resolution palette"
     # shellcheck disable=2086
     {
