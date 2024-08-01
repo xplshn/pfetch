@@ -2322,6 +2322,8 @@ main() {
     # shellcheck source=/dev/null
     [ -f "$PF_SOURCE" ] && . "$PF_SOURCE"
 
+    [ -n "$NO_COLOR" ] && PF_COLOR=0
+
     # Ensure that the 'TMPDIR' is writable as heredocs use it and
     # fail without the write permission. This was found to be the
     # case on Android where the temporary directory requires root.
