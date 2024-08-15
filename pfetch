@@ -460,7 +460,7 @@ get_kernel() {
     esac
 
     # '$kernel' is the cached output of 'uname -r'.
-    log kernel "$kernel" >&6
+    log kernel "${PF_KERNEL:-$kernel}" >&6
 }
 
 get_host() {
