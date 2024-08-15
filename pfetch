@@ -438,7 +438,6 @@ get_os() {
             distro="$os $kernel"
         ;;
     esac
-    [ -n "$PF_DISTRO" ] && distro="$PF_DISTRO"
 }
 
 get_kernel() {
@@ -461,7 +460,6 @@ get_kernel() {
     esac
 
     # '$kernel' is the cached output of 'uname -r'.
-    [ -n "$PF_KERNEL" ] && kernel="$PF_KERNEL"
     log kernel "$kernel" >&6
 }
 
