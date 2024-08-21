@@ -1519,46 +1519,46 @@ get_ascii() {
         ([Aa]rtix*)
             read_ascii 6 <<-EOF
 				${c4}      /\\
-				${c4}     /  \\
-				${c4}    /\`'.,\\
-				${c4}   /     ',
-				${c4}  /      ,\`\\
-				${c4} /   ,.'\`.  \\
-				${c4}/.,'\`     \`'.\\
+				     /  \\
+				    /\`'.,\\
+				   /     ',
+				  /      ,\`\\
+				 /   ,.'\`.  \\
+				/.,'\`     \`'.\\
 			EOF
         ;;
 
         ([Bb]edrock*)
             read_ascii 4 <<-EOF
 				${c7}__
-				${c7}\\ \\___
-				${c7} \\  _ \\
-				${c7}  \\___/
+				\\ \\___
+				 \\  _ \\
+				  \\___/
 			EOF
         ;;
 
         ([Aa]mog[Oo][Ss]*)
             read_ascii 4 <<-EOF
 				${c7}      -///:.
-				${c7}     smhhhhmh\`
-				${c7}    :NA${c4}mogO${c7}SNs
-				${c7}    hNNmmmmNNN
-				${c7}    NNNNNNNNNN
-				${c7}   :NNNNNNNNNN
-				${c7}   mNNssussNNN
-				${c7}  sNn:    sNNo
-				${c7}+ooo+     sNNo
-				${c7}        +oooo\`
+				     smhhhhmh\`
+				    :NA${c4}mogO${c7}SNs
+				    hNNmmmmNNN
+				    NNNNNNNNNN
+				   :NNNNNNNNNN
+				   mNNssussNNN
+				  sNn:    sNNo
+				+ooo+     sNNo
+				        +oooo\`
 			EOF
         ;;
 
         ([Bb]uildroot*)
             read_ascii 3 <<-EOF
 				${c3}   ___
-				${c3} / \`   \\
-				${c3}|   :  :|
-				${c3}-. _:__.-
-				${c3}  \` ---- \`
+				 / \`   \\
+				|   :  :|
+				-. _:__.-
+				  \` ---- \`
 			EOF
         ;;
 
@@ -2052,7 +2052,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Oo]racle*)
+        ([Oo]racle*)
         read_ascii 1 <<- EOF
 				${c1}     ___________
 				 ./##+++++++++++##\\.
@@ -2331,7 +2331,13 @@ ${0##*/} -v  show version
     # Disable warning about unused variables.
     # shellcheck disable=2034
     for _c in c1 c2 c3 c4 c5 c6 c7 c8; do
-        esc SGR "3${_c#?}" 0
+        esc SGR "3${_c#?}"
+        export "$_c=$e"
+    done
+
+    # Background color list.
+    for _c in bg1 bg2 bg3 bg4 bg5 bg6 bg7 bg8; do
+        esc SGR "4${_c#??}"
         export "$_c=$e"
     done
 
