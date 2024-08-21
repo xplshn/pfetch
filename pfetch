@@ -1669,7 +1669,7 @@ get_ascii() {
 
         ([Dd]igital\ [Uu][Nn][Ii][Xx])
             read_ascii 1 <<-EOF
-				      ${bg1}digital${c0}
+				      ${c1}digital
 
 				${c2}|| ||\\\\ ||||\\\\  //
 				|| |||\\\\|||| \\\\//
@@ -2361,15 +2361,6 @@ ${0##*/} -v  show version
         esc SGR "3${_c#?}"
         export "$_c=$e"
     done
-
-    # Background color list.
-    for _c in bg1 bg2 bg3 bg4 bg5 bg6 bg7 bg8; do
-        esc SGR "4${_c#??}"
-        export "$_c=$e"
-    done
-
-    esc SGR 0
-    export c0="$e"
 
     # Disable line wrapping and catch the EXIT signal to enable it again
     # on exit. Ideally you'd somehow query the current value and retain
