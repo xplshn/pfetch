@@ -1800,6 +1800,12 @@ get_ascii() {
 			EOF
         ;;
 
+        ([Hh][Pp]-[Uu][Xx]*)
+            read_ascii 4 <<-EOF
+				${bg4}hp${c0} UX
+			EOF
+        ;;
+
         ([Hh]ydro[Oo][Ss]*)
 			read_ascii 4 <<-EOF
 				${c1}╔╗╔╗──╔╗───╔═╦══╗
