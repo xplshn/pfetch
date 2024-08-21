@@ -428,6 +428,10 @@ get_os() {
             distro="$os $(freebsd-version)"
         ;;
 
+        (OSF1)
+            distro="Digital UNIX"
+        ;;
+
         (*)
             # Catch all to ensure '$distro' is never blank.
             # This also handles the BSDs.
@@ -1663,6 +1667,17 @@ get_ascii() {
 			EOF
         ;;
 
+        ([Dd]igital\ [Uu][Nn][Ii][Xx])
+            read_ascii 1 <<-EOF
+				      ${bg1}digital${c0}
+
+				${c2}|| ||\\\\ ||||\\\\  //
+				|| |||\\\\|||| \\\\//
+				||_||||\\\\||| //\\\\
+				\___/|| \\|||//  \\\\
+			EOF
+        ;;
+
         ([Ee]lementary*)
             read_ascii <<-EOF
 				${c7}  _______
@@ -1809,7 +1824,7 @@ get_ascii() {
 
         ([Ii]glunix*)
             read_ascii <<-EOF
-				${c0}       |
+				       |
 				       |          |
 				                  |
 				  |    ________
@@ -1826,7 +1841,7 @@ get_ascii() {
 
         ([Ii]nstant[Oo][Ss]*)
             read_ascii <<-EOF
-				${c0} ,-''-,
+				 ,-''-,
 				: .''. :
 				: ',,' :
 				 '-____:__
@@ -2249,6 +2264,12 @@ get_ascii() {
                 *\[3?m*)
                     line="${line%%\[3?m*}${line#*\[3?m}"
                 ;;
+                *\[4?m*)
+                    line="${line%%\[4?m*}${line#*\[4?m}"
+                ;;
+                *\[0m*)
+                    line="${line%%\[0m*}${line#*\[0m}"
+                ;;
                 *)
                     break
                 ;;
@@ -2340,6 +2361,9 @@ ${0##*/} -v  show version
         esc SGR "4${_c#??}"
         export "$_c=$e"
     done
+
+    esc SGR 0
+    export c0="$e"
 
     # Disable line wrapping and catch the EXIT signal to enable it again
     # on exit. Ideally you'd somehow query the current value and retain
