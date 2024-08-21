@@ -1802,7 +1802,7 @@ get_ascii() {
 
         ([Hh][Pp]-[Uu][Xx]*)
             read_ascii 4 <<-EOF
-				${bg4}hp${c0} UX
+				${c4}hp${c0} UX
 			EOF
         ;;
 
@@ -2361,6 +2361,9 @@ ${0##*/} -v  show version
         esc SGR "3${_c#?}"
         export "$_c=$e"
     done
+
+    esc SGR 0
+    export c0="$e"
 
     # Disable line wrapping and catch the EXIT signal to enable it again
     # on exit. Ideally you'd somehow query the current value and retain
