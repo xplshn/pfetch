@@ -774,7 +774,7 @@ get_pkgs() {
             has scratch    && count_pkg scratch 0 printf '%s\n' /var/lib/scratchpkg/db/*
             has kagami     && count_pkg kagami 0 printf '%s\n' /var/lib/kagami/pkgs/*
             has cave       && count_pkg cave 0 printf '%s\n' /var/db/paludis/repositories/cross-installed/*/data/*/ /var/db/paludis/repositories/installed/data/*/
-            has hardman    && count_pkg hpkg 0 printf '%s\n' "/var/hpkg/packages/*"
+            has hardman    && count_pkg hpkg 0 printf '%s\n' /var/hpkg/packages/*
 
             # 'nix' requires two commands.
             has nix-store  && count_pkg nix 0 nix_pkg_count
