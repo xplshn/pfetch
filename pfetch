@@ -605,7 +605,7 @@ get_uptime() {
 			EOF
         ;;
 
-        (IRIX)
+        (IRIX|OSF1)
             # Grab the uptime in a pretty format. Usually,
             # 00:00:00 from the 'ps' command.
             t=$(LC_ALL=POSIX ps -o etime= -p 1)
