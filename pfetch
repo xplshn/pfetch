@@ -739,13 +739,14 @@ get_pkgs() {
             has urpmq      && count_pkg urpmq 0 urpmq --list-media active
             has birb       && count_pkg birb 0 birb --list-installed
             has nix-store  && count_pkg nix 0 nix_pkg_count
-            has pm         && _p="$(pm list packages)" && count_pkg pm 0 printf '%s\n' "$_p"
+            has pm         && _p="$(pm list packages)" && \
+                count_pkg pm 0 printf '%s\n' "$_p"
 
             # Directories containing packages.
             has kiss       && count_pkg kiss 0 printf '%s\n' /var/db/kiss/installed/*/
             has cpt-list   && count_pkg cpt-list 0 printf '%s\n' /var/db/cpt/installed/*/
-            has brew       && count_pkg brew 0 \
-                printf '%s\n' "$(brew --cellar)/"* "$(brew --caskroom)/"*
+            has brew && \
+                count_pkg brew 0 printf '%s\n' "$(brew --cellar)/"* "$(brew --caskroom)/"*
             has emerge     && count_pkg portage 0 printf '%s\n' /var/db/pkg/*/*/
             has pkgtool    && count_pkg pkgtool 0 printf '%s\n' /var/log/packages/*
             has eopkg      && count_pkg eopkg 0 printf '%s\n' /var/lib/eopkg/package/*
