@@ -614,6 +614,8 @@ get_uptime() {
             # based on the uptime.
             case $t in
                 (*-*)   d=${t%%-*} t=${t#*-} ;;
+            esac
+            case $t in
                 (*:*:*) h=${t%%:*} t=${t#*:} ;;
             esac
 
