@@ -1018,13 +1018,11 @@ get_memory() {
 
         (MorphOS)
             while read -r line _ mem_used mem_full _; do
-                case $line in
-                    (total)
-                        mem_used=$(( mem_used / 1024 / 1024))
-                        mem_full=$(( mem_full / 1024 / 1024))
-                        break
-                    ;;
-                esac
+                if [ "$line" = "total" ]; then
+                    mem_used=$(( mem_used / 1024 / 1024))
+                    mem_full=$(( mem_full / 1024 / 1024))
+                    break
+                fi
             done <<-EOF
                 $(avail)
 			EOF
