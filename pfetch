@@ -1067,13 +1067,11 @@ get_memory() {
             #
             # Example output: Memory: 160M max, 147M avail, .....
             while IFS=' :' read -r label mem_full _ mem_free _; do
-                case $label in
-                    (Memory)
-                        mem_full=${mem_full%M}
-                        mem_free=${mem_free%M}
-                        break
-                    ;;
-                esac
+                if [ "$label" = "Memory" ]; then
+                    mem_full=${mem_full%M}
+                    mem_free=${mem_free%M}
+                    break
+                fi
             done <<-EOF
                 $(top -n)
 			EOF
