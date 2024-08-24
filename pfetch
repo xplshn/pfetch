@@ -1820,7 +1820,10 @@ get_ascii() {
 
         ([Hh][Pp]-[Uu][Xx]*)
             read_ascii 4 <<-EOF
-				${c4}hp${c0} UX
+				 ${c4}____
+				/ ${c7}/${c4}  \\
+				| ${c7}hp${c4} | UX
+				\\_${c7}/${c4}__/
 			EOF
         ;;
 
