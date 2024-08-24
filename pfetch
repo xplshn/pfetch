@@ -605,10 +605,14 @@ get_uptime() {
 			EOF
         ;;
 
-        (IRIX|OSF1)
+        (IRIX|OSF1|HP-UX)
             # Grab the uptime in a pretty format. Usually,
             # 00:00:00 from the 'ps' command.
-            t=$(LC_ALL=POSIX ps -o etime= -p 1)
+            if [ "$os" = "HP-UX" ]; then
+                t=$(UNIX95=1 ps -o etime= -p 1)
+            else
+                t=$(LC_ALL=POSIX ps -o etime= -p 1)
+            fi
 
             # Split the pretty output into days or hours
             # based on the uptime.
