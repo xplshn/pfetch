@@ -1820,10 +1820,14 @@ get_ascii() {
 
         ([Hh][Pp]-[Uu][Xx]*)
             read_ascii 4 <<-EOF
-				 ${c4}____
-				/ ${c7}/${c4}  \\
-				| ${c7}hp${c4} | UX
-				\\_${c7}/${c4}__/
+				  ${c4}____${c7}__${c4}______
+				 /   ${c7}/ /${c4}      \\
+				/   ${c7}/ /_  ____${c4} \\
+				|  ${c7}/ __ \\/ __ \\${c4}|
+				| ${c7}/ / / / /_/ /${c4}|
+				|${c7}/_/ /_/ .___/${c4} |
+				\\     ${c7}/ /${c4}      /
+				 \\___${c7}/_/${c4}______/
 			EOF
         ;;
 
@@ -2291,9 +2295,6 @@ get_ascii() {
                 *\[3?m*)
                     line="${line%%\[3?m*}${line#*\[3?m}"
                 ;;
-                *\[0m*)
-                    line="${line%%\[0m*}${line#*\[0m}"
-                ;;
                 *)
                     break
                 ;;
@@ -2379,9 +2380,6 @@ ${0##*/} -v  show version
         esc SGR "3${_c#?}"
         export "$_c=$e"
     done
-
-    esc SGR 0
-    export c0="$e"
 
     # Disable line wrapping and catch the EXIT signal to enable it again
     # on exit. Ideally you'd somehow query the current value and retain
