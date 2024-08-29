@@ -880,12 +880,10 @@ get_pkgs() {
     # package managers that are on many different systems
     has cargo      && count_pkg cargo 0 cargo_pkg_count
     has pipx       && count_pkg pipx 0 pipx list
-    if [ -z "$PF_FAST_PKG_COUNT" ]; then
-        if has pip; then
-            count_pkg pip 0 pip freeze
-        elif has pip3; then
-            count_pkg pip3 0 pip3 freeze
-        fi
+    if has pip; then
+        count_pkg pip 0 pip freeze
+    elif has pip3; then
+        count_pkg pip 0 pip3 freeze
     fi
 
     if [ $total_pkgs -gt 0 ]; then
