@@ -738,7 +738,6 @@ get_pkgs() {
             has guix       && count_pkg guix 0 guix package --list-installed
             has opkg       && count_pkg opkg 0 opkg list-installed
             has rad        && count_pkg rad 0 rad -cl
-            has radula     && count_pkg radula 0 radula -cl # 'Rad' was previously called 'Radula', some systems may still have the old name.
             has flatpak    && count_pkg flatpak 0 flatpak list
             has snap       && count_pkg snap 0 snap list
             has urpmq      && count_pkg urpmq 0 urpmq --list-media active
@@ -880,8 +879,14 @@ get_pkgs() {
 
     # package managers that are on many different systems
     has cargo      && count_pkg cargo 0 cargo_pkg_count
-    has pip        && count_pkg pip 0 pip freeze
     has pipx       && count_pkg pipx 0 pipx list
+    if [ -z "$PF_FAST_PKG_COUNT" ]; then
+        if has pip; then
+            count_pkg pip 0 pip freeze
+        elif has pip3; then
+            count_pkg pip3 0 pip3 freeze
+        fi
+    fi
 
     if [ $total_pkgs -gt 0 ]; then
         if [ "$PF_PACKAGE_MANAGERS" = "on" ]; then

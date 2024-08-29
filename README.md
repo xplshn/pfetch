@@ -160,6 +160,9 @@ PF_DISABLED_PACKAGE_MANAGERS=""
 # Default: '/' (except on iOS where it is /private/var, and on Android where it is /data)
 # Valid: string
 PF_DISKPATH="/"
+
+# Disable counting package managers that take a long time to count
+PF_FAST_PKG_COUNT=1
 ```
 
 ## Credit
