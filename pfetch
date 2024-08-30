@@ -1223,6 +1223,11 @@ get_disk() {
             set -- -k
         ;;
 
+        # The 'df' command is from NetBSD.
+        *agln*)
+            set -- -h
+        ;;
+
         # The 'df' command is from Haiku and is wildly
         # different and provides no workable output,
         # end here.
