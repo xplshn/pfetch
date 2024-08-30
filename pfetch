@@ -1183,15 +1183,22 @@ get_disk() {
     df_version=$(df --version 2>&1)
 
     case $df_version in
-        # The 'df' command from GNU coreutils works with the generic
-        # flags at the bottom of the case statement in most scenarios,
-        # but on Cygwin/MSYS2 the 'source' entry can have spaces if the
-        # Windows path to the Cygwin/MSYS2 installation contains spaces,
-        # breaking the parsing of the 'df' output.
-        # Using the --output flag with a layout that doesn't include the
-        # source path is a workaround for this issue.
         *GNU*)
-            set -- -h --output=fstype,size,used,avail,pcent
+            case $os in
+                # The 'df' command from GNU coreutils works with the generic
+                # flags in most scenarios, but on Cygwin/MSYS2 the 'source' entry
+                # can have spaces if the Windows path to the Cygwin/MSYS2 installation
+                # contains spaces, breaking the parsing of the 'df' output.
+                # Using the --output flag with a layout that doesn't include the
+                # source path is a workaround for this issue.
+                (CYGWIN*|MSYS*|MINGW*|Windows_NT)
+                    set -- -h --output=fstype,size,used,avail,pcent
+                ;;
+
+                (*)
+                    set -- -P -h
+                ;;
+            esac
         ;;
 
         # The 'df' command is from AIX.
