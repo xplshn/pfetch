@@ -226,11 +226,7 @@ get_os() {
     # On first run, this function displays _nothing_, only on the second
     # invocation is 'log()' called.
     if [ -n "$distro" ]; then
-        if [ -n "$PF_OS" ]; then
-            log os "$PF_OS" >&6
-        else
-            log os "$distro" >&6
-        fi
+        log os "${PF_OS:-$distro}" >&6
         return
     fi
 
@@ -432,6 +428,10 @@ get_os() {
             distro="$os $(freebsd-version)"
         ;;
 
+        (OSF1)
+            distro="Digital UNIX"
+        ;;
+
         (*)
             # Catch all to ensure '$distro' is never blank.
             # This also handles the BSDs.
@@ -460,7 +460,7 @@ get_kernel() {
     esac
 
     # '$kernel' is the cached output of 'uname -r'.
-    log kernel "$kernel" >&6
+    log kernel "${PF_KERNEL:-$kernel}" >&6
 }
 
 get_host() {
@@ -605,15 +605,21 @@ get_uptime() {
 			EOF
         ;;
 
-        (IRIX)
+        (IRIX|OSF1|HP-UX)
             # Grab the uptime in a pretty format. Usually,
             # 00:00:00 from the 'ps' command.
-            t=$(LC_ALL=POSIX ps -o etime= -p 1)
+            if [ "$os" = "HP-UX" ]; then
+                t=$(UNIX95=1 ps -o etime= -p 1)
+            else
+                t=$(LC_ALL=POSIX ps -o etime= -p 1)
+            fi
 
             # Split the pretty output into days or hours
             # based on the uptime.
             case $t in
                 (*-*)   d=${t%%-*} t=${t#*-} ;;
+            esac
+            case $t in
                 (*:*:*) h=${t%%:*} t=${t#*:} ;;
             esac
 
@@ -736,18 +742,61 @@ get_pkgs() {
             has snap       && count_pkg snap 0 snap list
             has urpmq      && count_pkg urpmq 0 urpmq --list-media active
             has birb       && count_pkg birb 0 birb --list-installed
+            has click      && count_pkg click 0 click list
+            has pacman-g2  && count_pkg pacman-g2 0 pacman-g2 -Q
+            has lvu        && count_pkg lvu 0 lvu installed
+            has tce-status && count_pkg tce 0 tce-status -i
+            has sorcery    && count_pkg sorcery 0 gaze installed
+            has alps       && count_pkg alps 0 alps showinstalled
+            has butch      && count_pkg butch 0 butch list
+            has swupd      && count_pkg swupd 0 swupd bundle-list --quiet
+            has pisi       && count_pkg pisi 0 pisi li
+            has pacstall   && count_pkg pacstall 0 pacstall -L
+            has bulge      && count_pkg bulge 0 bulge list
+            has evox       && count_pkg evox 0 cat /var/evox/packages/DB
+            has squirrel   && count_pkg squirrel 0 ls -w 1 /var/packages
+            has anise      && count_pkg anise 0 anise s --installed
+            has nix-store  && count_pkg nix 0 nix_pkg_count
+            has pm         && _p="$(pm list packages)" &&
+                count_pkg pm 0 printf '%s\n' "$_p"
+
+            # 'mine' conflicts with minesweeper games.
+            [ -f /etc/SDE-VERSION ] &&
+                has mine && count_pkg mine 0 mine -q
 
             # Directories containing packages.
             has kiss       && count_pkg kiss 0 printf '%s\n' /var/db/kiss/installed/*/
             has cpt-list   && count_pkg cpt-list 0 printf '%s\n' /var/db/cpt/installed/*/
-            has brew       && count_pkg brew 0 \
-                printf '%s\n' "$(brew --cellar)/"* "$(brew --caskroom)/"*
+            has brew &&
+                count_pkg brew 0 printf '%s\n' "$(brew --cellar)/"* "$(brew --caskroom)/"*
             has emerge     && count_pkg portage 0 printf '%s\n' /var/db/pkg/*/*/
             has pkgtool    && count_pkg pkgtool 0 printf '%s\n' /var/log/packages/*
             has eopkg      && count_pkg eopkg 0 printf '%s\n' /var/lib/eopkg/package/*
 
-            # 'nix' requires two commands.
-            has nix-store  && count_pkg nix 0 nix_pkg_count
+            has Compile    && count_pkg compile 0 printf '%s\n' /Programs/*/
+            has inary      && count_pkg inary 0 printf '%s\n' /var/lib/inary/package/*
+            has tekel      && count_pkg tekel 0 printf '%s\n' /data/app/"$USER"/* /data/app/system/*
+            has crew       && count_pkg chromebrew 0 printf '%s\n' "${CREW_PREFIX:-/usr/local}"/etc/crew/meta/*.filelist
+            has scratch    && count_pkg scratch 0 printf '%s\n' /var/lib/scratchpkg/db/*
+            has kagami     && count_pkg kagami 0 printf '%s\n' /var/lib/kagami/pkgs/*
+            has cave       && count_pkg cave 0 printf '%s\n' /var/db/paludis/repositories/cross-installed/*/data/*/ /var/db/paludis/repositories/installed/data/*/
+            has hardman    && count_pkg hpkg 0 printf '%s\n' /var/hpkg/packages/*
+
+            # List these last as they accompany regular package managers.
+            has spm        && count_pkg spm 0 spm list -i
+            has puyo       && count_pkg puyo 0 printf '%s\n' ~/.puyo/installed/*
+
+
+            has appimaged  && count_pkg appimage 0 printf '%s\n' "$HOME"/.local/bin/*.[Aa]pp[Ii]mage "$HOME"/Applications/*.[Aa]pp[Ii]mage
+
+            # Has devbox & is initialized
+            has devbox &&
+            case "$(devbox global list)" in
+            *"not activated"*) ;;
+            *)
+                  count_pkg devbox 0 devbox global list
+            ;;
+            esac
         ;;
 
         (CYGWIN*|MSYS*|MINGW*|Windows_NT)
@@ -768,8 +817,8 @@ get_pkgs() {
             has dpkg       && count_pkg dpkg 0 dpkg-query -f '.\n' -W
 
             # Directories containing packages.
-            has brew       && count_pkg brew 0 \
-                printf '%s\n' "$(brew --cellar)/"* "$(brew --caskroom)/"*
+            has brew &&
+                count_pkg brew 0 printf '%s\n' "$(brew --cellar)/"* "$(brew --caskroom)/"*
 
             # 'port' prints a single line of output to 'stdout'
             # when no packages are installed and exits with
@@ -831,6 +880,11 @@ get_pkgs() {
     # package managers that are on many different systems
     has cargo      && count_pkg cargo 0 cargo_pkg_count
     has pipx       && count_pkg pipx 0 pipx list
+    if has pip; then
+        count_pkg pip 0 pip freeze
+    elif has pip3; then
+        count_pkg pip 0 pip3 freeze
+    fi
 
     if [ $total_pkgs -gt 0 ]; then
         if [ "$PF_PACKAGE_MANAGERS" = "on" ]; then
@@ -1016,13 +1070,11 @@ get_memory() {
 
         (MorphOS)
             while read -r line _ mem_used mem_full _; do
-                case $line in
-                    (total)
-                        mem_used=$(( mem_used / 1024 / 1024))
-                        mem_full=$(( mem_full / 1024 / 1024))
-                        break
-                    ;;
-                esac
+                if [ "$line" = "total" ]; then
+                    mem_used=$(( mem_used / 1024 / 1024))
+                    mem_full=$(( mem_full / 1024 / 1024))
+                    break
+                fi
             done <<-EOF
                 $(avail)
 			EOF
@@ -1067,13 +1119,11 @@ get_memory() {
             #
             # Example output: Memory: 160M max, 147M avail, .....
             while IFS=' :' read -r label mem_full _ mem_free _; do
-                case $label in
-                    (Memory)
-                        mem_full=${mem_full%M}
-                        mem_free=${mem_free%M}
-                        break
-                    ;;
-                esac
+                if [ "$label" = "Memory" ]; then
+                    mem_full=${mem_full%M}
+                    mem_free=${mem_free%M}
+                    break
+                fi
             done <<-EOF
                 $(top -n)
 			EOF
@@ -1133,15 +1183,22 @@ get_disk() {
     df_version=$(df --version 2>&1)
 
     case $df_version in
-        # The 'df' command from GNU coreutils works with the generic
-        # flags at the bottom of the case statement in most scenarios,
-        # but on Cygwin/MSYS2 the 'source' entry can have spaces if the
-        # Windows path to the Cygwin/MSYS2 installation contains spaces,
-        # breaking the parsing of the 'df' output.
-        # Using the --output flag with a layout that doesn't include the
-        # source path is a workaround for this issue.
         *GNU*)
-            set -- -h --output=fstype,size,used,avail,pcent
+            case $os in
+                # The 'df' command from GNU coreutils works with the generic
+                # flags in most scenarios, but on Cygwin/MSYS2 the 'source' entry
+                # can have spaces if the Windows path to the Cygwin/MSYS2 installation
+                # contains spaces, breaking the parsing of the 'df' output.
+                # Using the --output flag with a layout that doesn't include the
+                # source path is a workaround for this issue.
+                (CYGWIN*|MSYS*|MINGW*|Windows_NT)
+                    set -- -h --output=fstype,size,used,avail,pcent
+                ;;
+
+                (*)
+                    set -- -P -h
+                ;;
+            esac
         ;;
 
         # The 'df' command is from AIX.
@@ -1151,7 +1208,7 @@ get_disk() {
 
         # The 'df' command is from IRIX.
         *befhikm*)
-            irix_df=1
+            non_human_df=1
             set -- -P -k
         ;;
 
@@ -1160,11 +1217,20 @@ get_disk() {
             set -- -h
         ;;
 
-        # The 'df' command is from Haiku and is wildly
-        # different and provides no workable output,
-        # end here.
+        # The 'df' command is from Digital UNIX
+        *Peikn*)
+            non_human_df=1
+            set -- -k
+        ;;
+
+        # The 'df' command is from NetBSD.
+        *agln*)
+            set -- -h
+        ;;
+
+        # The 'df' command is from Haiku.
         *Tracker*)
-            return
+            haiku_df=1
         ;;
 
         # From testing it is safe to assume that
@@ -1179,6 +1245,7 @@ get_disk() {
         case "$distro" in
             iOS*)     PF_DISKPATH="/private/var" ;;
             Android*) PF_DISKPATH="/data"        ;;
+            Haiku*)   PF_DISKPATH="/boot"        ;;
             *)        PF_DISKPATH="/"            ;;
         esac
     fi
@@ -1192,18 +1259,77 @@ get_disk() {
     #
     # The next lines are then split to grab the relevant
     # information and thankfully the output remains the
-    # same between all but one 'df' implementation.
-    {
-        read -r _ # discard the first line
-        read -r _ full used _ perc _
+    # same between all but three 'df' implementations.
+    if [ -n "$haiku_df" ]; then
+        while IFS= read -r line; do
+            case $line in
+                (*Total\ Blocks:*)
+                    full=${line##*:}
+                    full=${full#"${full%%[! ]*}"}
+                    fullblocks=${full#*(}
+                    fullblocks=${fullblocks%% *}
+                    full=${full%% (*}
+                ;;
+                (*Free\ Blocks:*)
+                    free=${line##*(}
+                    free=${free%% *}
+                ;;
+            esac
+        done <<-EOF
+			$(df "$PF_DISKPATH")
+		EOF
 
-        if [ -n "$irix_df" ]; then
-            used=$((used / 1024 / 1024))G
-            full=$((full / 1024 / 1024))G
+        usedblocks=$((fullblocks - free))
+
+        # Convert the $used value to human readable format.
+        used=$((usedblocks / 512))
+        if [ $used -gt 1024 ]; then
+            usedi=$((used / 1024))
+            usedf=$((used % 1024 / 100))
+            used="${usedi}.${usedf} GiB"
+        else
+            used="${used} MiB"
         fi
-    } <<-EOF
-		$(df "$@" "$PF_DISKPATH")
-	EOF
+
+        perc=$((usedblocks * 100 / fullblocks))%
+    else
+        {
+            read -r _ # discard the first line
+            read -r _ full used _ perc _
+        } <<-EOF
+			$(df "$@" "$PF_DISKPATH")
+		EOF
+    fi
+
+    # IRIX and Digital UNIX don't support human readable output,
+    # so we need to convert the output to human readable format
+    # manually.
+    if [ -n "$non_human_df" ]; then
+        if [ "$used" -gt 1024 ]; then
+            usedi=$((used / 1024))
+            usedf=$((used % 1024 / 100))
+            used="${usedi}.${usedf}M"
+            if [ $usedi -gt 1024 ]; then
+                gusedi=$((usedi / 1024))
+                usedf=$((usedi % 1024 / 100))
+                used="${gusedi}.${usedf}G"
+            fi
+        else
+            used="${used}K"
+        fi
+        if [ "$full" -gt 1024 ]; then
+            fulli=$((full / 1024))
+            fullf=$((full % 1024 / 100))
+            full="${fulli}.${fullf}M"
+            if [ $fulli -gt 1024 ]; then
+                gfulli=$((fulli / 1024))
+                fullf=$((fulli % 1024 / 100))
+                full="${gfulli}.${fullf}G"
+            fi
+        else
+            full="${full}K"
+        fi
+    fi
 
     log disk "$used / $full ($perc)" >&6
 }
@@ -1459,6 +1585,16 @@ get_ascii() {
     # False positive.
     # shellcheck disable=2154
     case ${1:-${PF_ASCII:-${distro:-$os}}} in
+        [Aa][Ii][Xx])
+            read_ascii 4 <<-EOF
+				${c2}    __    __ _    _
+				   /_ \\   || \\\\  //
+				  //_\ \\  ||  \\\\//
+				 / ___  \\ ||  //\\\\
+				/_/   \\__\\|| //  \\\\
+			EOF
+        ;;
+
         [Aa]lma*)
             read_ascii 3 <<- EOF
 				${c1}    {#@ .,  ${c3} 	,..<.
@@ -1523,46 +1659,46 @@ get_ascii() {
         ([Aa]rtix*)
             read_ascii 6 <<-EOF
 				${c4}      /\\
-				${c4}     /  \\
-				${c4}    /\`'.,\\
-				${c4}   /     ',
-				${c4}  /      ,\`\\
-				${c4} /   ,.'\`.  \\
-				${c4}/.,'\`     \`'.\\
+				     /  \\
+				    /\`'.,\\
+				   /     ',
+				  /      ,\`\\
+				 /   ,.'\`.  \\
+				/.,'\`     \`'.\\
 			EOF
         ;;
 
         ([Bb]edrock*)
             read_ascii 4 <<-EOF
 				${c7}__
-				${c7}\\ \\___
-				${c7} \\  _ \\
-				${c7}  \\___/
+				\\ \\___
+				 \\  _ \\
+				  \\___/
 			EOF
         ;;
 
         ([Aa]mog[Oo][Ss]*)
             read_ascii 4 <<-EOF
 				${c7}      -///:.
-				${c7}     smhhhhmh\`
-				${c7}    :NA${c4}mogO${c7}SNs
-				${c7}    hNNmmmmNNN
-				${c7}    NNNNNNNNNN
-				${c7}   :NNNNNNNNNN
-				${c7}   mNNssussNNN
-				${c7}  sNn:    sNNo
-				${c7}+ooo+     sNNo
-				${c7}        +oooo\`
+				     smhhhhmh\`
+				    :NA${c4}mogO${c7}SNs
+				    hNNmmmmNNN
+				    NNNNNNNNNN
+				   :NNNNNNNNNN
+				   mNNssussNNN
+				  sNn:    sNNo
+				+ooo+     sNNo
+				        +oooo\`
 			EOF
         ;;
 
         ([Bb]uildroot*)
             read_ascii 3 <<-EOF
 				${c3}   ___
-				${c3} / \`   \\
-				${c3}|   :  :|
-				${c3}-. _:__.-
-				${c3}  \` ---- \`
+				 / \`   \\
+				|   :  :|
+				-. _:__.-
+				  \` ---- \`
 			EOF
         ;;
 
@@ -1664,6 +1800,17 @@ get_ascii() {
 				     ${c1}|
 				     |
 				     |
+			EOF
+        ;;
+
+        ([Dd]igital\ [Uu][Nn][Ii][Xx])
+            read_ascii 1 <<-EOF
+				      ${c1}digital
+
+				${c2}|| ||\\\\ ||||\\\\  //
+				|| |||\\\\|||| \\\\//
+				||_||||\\\\||| //\\\\
+				\___/|| \\|||//  \\\\
 			EOF
         ;;
 
@@ -1789,6 +1936,19 @@ get_ascii() {
 			EOF
         ;;
 
+        ([Hh][Pp]-[Uu][Xx]*)
+            read_ascii 4 <<-EOF
+				  ${c4}____${c7}__${c4}______
+				 /   ${c7}/ /${c4}      \\
+				/   ${c7}/ /_  ____${c4} \\
+				|  ${c7}/ __ \\/ __ \\${c4}|
+				| ${c7}/ / / / /_/ /${c4}|
+				|${c7}/_/ /_/ .___/${c4} |
+				\\     ${c7}/ /${c4}      /
+				 \\___${c7}/_/${c4}______/
+			EOF
+        ;;
+
         ([Hh]ydro[Oo][Ss]*)
 			read_ascii 4 <<-EOF
 				${c1}╔╗╔╗──╔╗───╔═╦══╗
@@ -1813,7 +1973,7 @@ get_ascii() {
 
         ([Ii]glunix*)
             read_ascii <<-EOF
-				${c0}       |
+				       |
 				       |          |
 				                  |
 				  |    ________
@@ -1830,7 +1990,7 @@ get_ascii() {
 
         ([Ii]nstant[Oo][Ss]*)
             read_ascii <<-EOF
-				${c0} ,-''-,
+				 ,-''-,
 				: .''. :
 				: ',,' :
 				 '-____:__
@@ -2056,7 +2216,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Oo]racle*)
+        ([Oo]racle*)
         read_ascii 1 <<- EOF
 				${c1}     ___________
 				 ./##+++++++++++##\\.
@@ -2302,7 +2462,7 @@ get_ascii() {
 main() {
     case $* in
         -v|--version)
-            printf '%s 1.3.0\n' "${0##*/}"
+            printf '%s 1.4.0\n' "${0##*/}"
             return 0
         ;;
 
@@ -2346,8 +2506,8 @@ ${0##*/} -v  show version
     # Generic color list.
     # Disable warning about unused variables.
     # shellcheck disable=2034
-    for _c in c1 c2 c3 c4 c5 c6 c7 c8; do
-        esc SGR "3${_c#?}" 0
+    for _c in c0 c1 c2 c3 c4 c5 c6 c7; do
+        esc SGR "3${_c#?}"
         export "$_c=$e"
     done
 
